@@ -1,0 +1,19 @@
+title: Mshta Proxy Execution
+slug: win_susp_mshta
+status: experimental
+description: >
+  Detects mshta.exe executing scripts or remote content, a common LOLBIN proxy that
+  can also appear in legacy enterprise packages.
+references:
+  - https://github.com/SigmaHQ/sigma
+  - https://attack.mitre.org/techniques/T1218/005/
+tags:
+  - attack.defense_evasion
+  - attack.t1218.005
+level: medium
+falsepositives:
+  - Legacy software launching HTA helpers
+detection:
+  selection:
+    Image|endswith: '\mshta.exe'
+  condition: selection

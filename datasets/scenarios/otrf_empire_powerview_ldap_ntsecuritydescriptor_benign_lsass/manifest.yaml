@@ -1,0 +1,37 @@
+scenario_id: otrf_empire_powerview_ldap_ntsecuritydescriptor_benign_lsass
+split: dev
+origin: otrf
+description: 'OTRF background window: svchost.exe accessed LSASS (common false positive
+  for credential-dumping rules).'
+window:
+  start: '2020-09-21T17:09:48.540000Z'
+  end: '2020-09-21T17:09:50.268000Z'
+alert:
+  alert_id: alr-gn_lsass
+  host: WORKSTATION5.theshire.local
+  fired_at: '2020-09-21T17:09:48.540000Z'
+  rule_id: win_susp_lsass_access
+  rule_title: LSASS Memory Access
+  severity: high
+  trigger_event_id: ev-0001
+gold:
+  verdict: likely_benign
+  techniques: []
+  root_pid: 60
+  key_pids:
+  - 60
+  persistence_evidence: []
+  acceptable_actions:
+  - close_as_benign
+  - monitor
+  unacceptable_actions:
+  - isolate_host
+  - kill_process
+  narrative: 'GOLD-MARKER-OTRF-BENIGN. Real OTRF telemetry slice from empire_powerview_ldap_ntsecuritydescriptor:
+    svchost.exe (pid 60) accessed lsass.exe with GrantedAccess=0x1000. No attacker
+    LOLBIN or dump tool is present in this boxed window; this is a known false-positive
+    class for LSASS-access detections.'
+provenance:
+  catalog_id: empire_powerview_ldap_ntsecuritydescriptor
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/empire_powerview_ldap_ntsecuritydescriptor.zip
+  source_sha256: 6db5eac7fdab1fd1868047615caf590cb13b64a878e203bf3f253c2527229587

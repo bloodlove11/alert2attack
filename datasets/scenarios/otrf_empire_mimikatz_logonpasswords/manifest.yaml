@@ -1,0 +1,37 @@
+scenario_id: otrf_empire_mimikatz_logonpasswords
+split: test
+origin: otrf
+description: OTRF-derived boxed case for otrf_empire_mimikatz_logonpasswords
+window:
+  start: '2020-08-07T14:32:44.286000Z'
+  end: '2020-08-07T14:32:47.130000Z'
+alert:
+  alert_id: alr-asswords
+  host: WORKSTATION5.theshire.local
+  fired_at: '2020-08-07T14:32:45.881000Z'
+  rule_id: win_susp_lsass_access
+  rule_title: LSASS Memory Access
+  severity: high
+  trigger_event_id: ev-0018
+gold:
+  verdict: malicious
+  techniques:
+  - T1003.001
+  root_pid: 6504
+  key_pids:
+  - 6504
+  - 6504
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF empire_mimikatz_logonpasswords.zip
+    (empire_mimikatz_logonpasswords).
+provenance:
+  catalog_id: empire_mimikatz_logonpasswords
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/credential_access/host/empire_mimikatz_logonpasswords.zip
+  source_sha256: bb4c057b62d781be5426e011872ba1a15070c07afbb24848a14458f4b22b06fb

@@ -1,0 +1,13 @@
+title: Suspicious Rundll32 Execution
+slug: win_susp_rundll32
+status: experimental
+description: >
+  Detects rundll32.exe used with unusual scripting proxies.
+references: [https://attack.mitre.org/techniques/T1218/011/]
+tags: [attack.defense_evasion, attack.t1218.011]
+level: medium
+falsepositives: [Legitimate COM registration]
+detection:
+  selection:
+    Image|endswith: '\rundll32.exe'
+  condition: selection

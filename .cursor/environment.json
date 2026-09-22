@@ -1,0 +1,4 @@
+{
+  "name": "alert2attack",
+  "install": "bash .cursor/install.sh"
+}

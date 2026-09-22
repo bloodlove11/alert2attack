@@ -1,0 +1,37 @@
+scenario_id: otrf_auditpol_system_user_auditpolicy_modification
+split: test
+origin: otrf
+description: OTRF-derived boxed case for otrf_auditpol_system_user_auditpolicy_modification
+window:
+  start: '2022-08-18T13:56:13.570000Z'
+  end: '2022-08-18T13:56:13.633000Z'
+alert:
+  alert_id: alr-fication
+  host: pedro-computer
+  fired_at: '2022-08-18T13:56:13.608000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0039
+gold:
+  verdict: malicious
+  techniques:
+  - T1562.002
+  root_pid: 5624
+  key_pids:
+  - 5624
+  - 5624
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF auditpol_system_user_auditpolicy_modification.zip
+    (auditpol_system_user_auditpolicy_modification).
+provenance:
+  catalog_id: auditpol_system_user_auditpolicy_modification
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/auditpol_system_user_auditpolicy_modification.zip
+  source_sha256: 5eb1776e7e9f79060a87ed9efcce0eebbab7940f8f51db8b2d67368c64e2187d

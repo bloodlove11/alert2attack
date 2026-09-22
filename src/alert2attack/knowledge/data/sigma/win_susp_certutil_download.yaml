@@ -1,0 +1,22 @@
+title: Certutil Download
+slug: win_susp_certutil_download
+status: experimental
+description: >
+  Detects certutil.exe used with download/urlcache flags, a living-off-the-land
+  download technique that also appears during certificate administration.
+references:
+  - https://github.com/SigmaHQ/sigma
+  - https://attack.mitre.org/techniques/T1105/
+tags:
+  - attack.command_and_control
+  - attack.t1105
+level: medium
+falsepositives:
+  - Certificate import/export by administrators
+detection:
+  selection:
+    Image|endswith: '\certutil.exe'
+    CommandLine|contains:
+      - 'urlcache'
+      - '-split'
+  condition: selection

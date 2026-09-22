@@ -1,0 +1,37 @@
+scenario_id: otrf_empire_persistence_registry_modification_run_keys_standard_user
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_empire_persistence_registry_modification_run_keys_standard_user
+window:
+  start: '2020-09-04T07:07:18.138000Z'
+  end: '2020-09-04T07:07:18.201000Z'
+alert:
+  alert_id: alr-ard_user
+  host: WORKSTATION5.theshire.local
+  fired_at: '2020-09-04T07:07:18.180000Z'
+  rule_id: win_susp_run_key
+  rule_title: Registry Run Key Persistence
+  severity: high
+  trigger_event_id: ev-0024
+gold:
+  verdict: malicious
+  techniques:
+  - T1547.001
+  root_pid: 4796
+  key_pids:
+  - 4796
+  - 4796
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF empire_persistence_registry_modification_run_keys_standard_user.zip
+    (empire_persistence_registry_modification_run_keys_standard_user).
+provenance:
+  catalog_id: empire_persistence_registry_modification_run_keys_standard_user
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/persistence/host/empire_persistence_registry_modification_run_keys_standard_user.zip
+  source_sha256: 2965f791bcaf5e6ccfc4059985e81fd7e67ec87f17855b6c383edd1b03a19c36

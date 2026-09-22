@@ -1,0 +1,63 @@
+# Published ports bind to loopback only. Do not expose this stack on a
+# public interface: the API has no inbound auth.
+services:
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      ALERT2ATTACK_OLLAMA_BASE_URL: http://ollama:11434/v1
+      ALERT2ATTACK_OLLAMA_MODEL: qwen2.5:7b-instruct
+      # Durable jobs, so a console case link still opens after a restart.
+      ALERT2ATTACK_JOBS_DB: /data/jobs.sqlite
+      ALERT2ATTACK_CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+    volumes:
+      - alert2attack_data:/data
+    depends_on:
+      ollama-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 10s
+      retries: 24
+      start_period: 5s
+    restart: unless-stopped
+
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        export OLLAMA_HOST=http://ollama:11434
+        echo "Waiting for Ollama API..."
+        until ollama list >/dev/null 2>&1; do sleep 1; done
+        ollama pull qwen2.5:7b-instruct
+    restart: "no"
+
+volumes:
+  ollama_data:
+  alert2attack_data:

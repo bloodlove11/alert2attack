@@ -1,0 +1,39 @@
+scenario_id: otrf_empire_launcher_sct_regsvr32
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_empire_launcher_sct_regsvr32
+window:
+  start: '2020-07-22T03:27:53.045000Z'
+  end: '2020-07-22T03:27:53.091000Z'
+alert:
+  alert_id: alr-regsvr32
+  host: WORKSTATION5.mordor.local
+  fired_at: '2020-07-22T03:27:53.065000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0027
+gold:
+  verdict: malicious
+  techniques:
+  - T1218.010
+  - T1059.001
+  root_pid: 9076
+  key_pids:
+  - 9076
+  - 9076
+  - 4856
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF empire_launcher_sct_regsvr32.zip
+    (empire_launcher_sct_regsvr32).
+provenance:
+  catalog_id: empire_launcher_sct_regsvr32
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/empire_launcher_sct_regsvr32.zip
+  source_sha256: abeb5c52c75286386e5eb999d7423d738a624191f4a95fb62694b471a10b2dab

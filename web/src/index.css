@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* A SOC console is looked at for hours in a dim room; dark is the default,
+   not a preference toggle. */
+@theme {
+  --color-ink: #0f1620;
+  --color-panel: #161f2b;
+  --color-edge: #26313f;
+  --color-dim: #8b9bb0;
+  --color-accent: #4da3ff;
+
+  --color-malicious: #f0603f;
+  --color-suspicious: #e8a33d;
+  --color-benign: #3fb27f;
+  --color-unknown: #7c8da3;
+}
+
+html,
+body,
+#root {
+  background: var(--color-ink);
+  color: #e6edf6;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+code,
+.mono {
+  font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+}

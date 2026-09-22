@@ -1,0 +1,249 @@
+[
+  {
+    "technique_id": "T1059",
+    "name": "Command and Scripting Interpreter",
+    "tactics": [
+      "execution"
+    ],
+    "description": "Abuse of command-line and scripting interpreters to execute commands, scripts or binaries."
+  },
+  {
+    "technique_id": "T1059.001",
+    "name": "PowerShell",
+    "tactics": [
+      "execution"
+    ],
+    "description": "Use of PowerShell to run commands, download payloads or execute scripts, often obfuscated or encoded."
+  },
+  {
+    "technique_id": "T1059.003",
+    "name": "Windows Command Shell",
+    "tactics": [
+      "execution"
+    ],
+    "description": "Use of cmd.exe to run commands or batch scripts."
+  },
+  {
+    "technique_id": "T1566.001",
+    "name": "Phishing: Spearphishing Attachment",
+    "tactics": [
+      "initial-access"
+    ],
+    "description": "A malicious file delivered as an email attachment that the user is lured into opening."
+  },
+  {
+    "technique_id": "T1204.002",
+    "name": "User Execution: Malicious File",
+    "tactics": [
+      "execution"
+    ],
+    "description": "The user opens a delivered file (document, archive, executable) which starts the malicious chain."
+  },
+  {
+    "technique_id": "T1105",
+    "name": "Ingress Tool Transfer",
+    "tactics": [
+      "command-and-control"
+    ],
+    "description": "Downloading tools or payloads from an external system into the compromised environment."
+  },
+  {
+    "technique_id": "T1547.001",
+    "name": "Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder",
+    "tactics": [
+      "persistence",
+      "privilege-escalation"
+    ],
+    "description": "Adding a program to a Run/RunOnce key or Startup folder so it executes at logon."
+  },
+  {
+    "technique_id": "T1053.005",
+    "name": "Scheduled Task/Job: Scheduled Task",
+    "tactics": [
+      "execution",
+      "persistence",
+      "privilege-escalation"
+    ],
+    "description": "Creating or modifying a Windows scheduled task to run code on a schedule or at logon."
+  },
+  {
+    "technique_id": "T1543.003",
+    "name": "Create or Modify System Process: Windows Service",
+    "tactics": [
+      "persistence",
+      "privilege-escalation"
+    ],
+    "description": "Installing or modifying a Windows service so a payload runs with SYSTEM privileges and survives reboot."
+  },
+  {
+    "technique_id": "T1003.001",
+    "name": "OS Credential Dumping: LSASS Memory",
+    "tactics": [
+      "credential-access"
+    ],
+    "description": "Reading the memory of lsass.exe to extract credential material."
+  },
+  {
+    "technique_id": "T1027",
+    "name": "Obfuscated Files or Information",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Encoding, encrypting or otherwise obscuring payloads and commands to evade analysis and detection."
+  },
+  {
+    "technique_id": "T1218.005",
+    "name": "System Binary Proxy Execution: Mshta",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Using mshta.exe to execute HTA files or inline script through a trusted signed binary."
+  },
+  {
+    "technique_id": "T1218.010",
+    "name": "System Binary Proxy Execution: Regsvr32",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Using regsvr32.exe to load and run code, including remote scriptlets, via a trusted signed binary."
+  },
+  {
+    "technique_id": "T1218.011",
+    "name": "System Binary Proxy Execution: Rundll32",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Using rundll32.exe to execute DLL exports or scripts through a trusted signed binary."
+  },
+  {
+    "technique_id": "T1021.002",
+    "name": "Remote Services: SMB/Windows Admin Shares",
+    "tactics": [
+      "lateral-movement"
+    ],
+    "description": "Using SMB admin shares (ADMIN$, C$) with valid credentials to move laterally and execute remotely, e.g. PsExec."
+  },
+  {
+    "technique_id": "T1047",
+    "name": "Windows Management Instrumentation",
+    "tactics": [
+      "execution"
+    ],
+    "description": "Using WMI to execute commands locally or on remote hosts."
+  },
+  {
+    "technique_id": "T1071.001",
+    "name": "Application Layer Protocol: Web Protocols",
+    "tactics": [
+      "command-and-control"
+    ],
+    "description": "Command-and-control traffic blended into HTTP/HTTPS."
+  },
+  {
+    "technique_id": "T1070.004",
+    "name": "Indicator Removal: File Deletion",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Deleting dropped files or tools to remove traces of activity."
+  },
+  {
+    "technique_id": "T1197",
+    "name": "BITS Jobs",
+    "tactics": [
+      "defense-evasion",
+      "persistence"
+    ],
+    "description": "Abuse of Background Intelligent Transfer Service jobs to download or execute payloads."
+  },
+  {
+    "technique_id": "T1037.001",
+    "name": "Boot or Logon Initialization Scripts: Logon Script (Windows)",
+    "tactics": [
+      "persistence",
+      "privilege-escalation"
+    ],
+    "description": "Adding a logon script via UserInitMprLogonScript or similar so code runs at user logon."
+  },
+  {
+    "technique_id": "T1562.002",
+    "name": "Impair Defenses: Disable Windows Event Logging",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Disabling or modifying Windows event logging to hide activity."
+  },
+  {
+    "technique_id": "T1112",
+    "name": "Modify Registry",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Modifying the Windows registry to hide configuration changes or impair defenses."
+  },
+  {
+    "technique_id": "T1003.003",
+    "name": "OS Credential Dumping: NTDS",
+    "tactics": [
+      "credential-access"
+    ],
+    "description": "Accessing or copying the Active Directory NTDS.dit database to extract credentials."
+  },
+  {
+    "technique_id": "T1003",
+    "name": "OS Credential Dumping",
+    "tactics": [
+      "credential-access"
+    ],
+    "description": "Attempting to dump credentials to obtain account login and credential material."
+  },
+  {
+    "technique_id": "T1003.006",
+    "name": "OS Credential Dumping: DCSync",
+    "tactics": [
+      "credential-access"
+    ],
+    "description": "Abusing Directory Replication Service to simulate a domain controller and pull password data."
+  },
+  {
+    "technique_id": "T1055",
+    "name": "Process Injection",
+    "tactics": [
+      "defense-evasion",
+      "privilege-escalation"
+    ],
+    "description": "Injecting code into processes to evade defenses and elevate or hide execution."
+  },
+  {
+    "technique_id": "T1218",
+    "name": "System Binary Proxy Execution",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Using signed Microsoft binaries to proxy execution of malicious payloads."
+  },
+  {
+    "technique_id": "T1218.004",
+    "name": "System Binary Proxy Execution: InstallUtil",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Using InstallUtil.exe to execute .NET assemblies and bypass application controls."
+  },
+  {
+    "technique_id": "T1220",
+    "name": "XSL Script Processing",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Using XSL stylesheets to execute scripts embedded in or referenced by XML."
+  },
+  {
+    "technique_id": "T1222",
+    "name": "File and Directory Permissions Modification",
+    "tactics": [
+      "defense-evasion"
+    ],
+    "description": "Modifying file or directory permissions or ownership to evade defenses or enable access."
+  }
+]

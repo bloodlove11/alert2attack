@@ -1,0 +1,20 @@
+title: Suspicious Scheduled Task Creation
+slug: win_susp_schtask_creation
+status: experimental
+description: >
+  Detects creation of a Windows scheduled task via schtasks.exe or at.exe, a common
+  persistence and execution technique that also appears in legitimate admin automation.
+references:
+  - https://github.com/SigmaHQ/sigma
+  - https://attack.mitre.org/techniques/T1053/005/
+tags:
+  - attack.execution
+  - attack.persistence
+  - attack.t1053.005
+level: medium
+falsepositives:
+  - Software deployment and patch tools creating maintenance tasks
+detection:
+  selection:
+    Image|endswith: '\schtasks.exe'
+  condition: selection

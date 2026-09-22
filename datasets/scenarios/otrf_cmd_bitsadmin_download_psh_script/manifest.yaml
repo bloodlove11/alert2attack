@@ -1,0 +1,38 @@
+scenario_id: otrf_cmd_bitsadmin_download_psh_script
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_bitsadmin_download_psh_script
+window:
+  start: '2020-10-23T06:36:43.533000Z'
+  end: '2020-10-23T06:36:43.640000Z'
+alert:
+  alert_id: alr-h_script
+  host: WORKSTATION5
+  fired_at: '2020-10-23T06:36:43.542000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0006
+gold:
+  verdict: malicious
+  techniques:
+  - T1105
+  - T1197
+  root_pid: 9260
+  key_pids:
+  - 9260
+  - 9260
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_bitsadmin_download_psh_script.zip
+    (cmd_bitsadmin_download_psh_script).
+provenance:
+  catalog_id: cmd_bitsadmin_download_psh_script
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/cmd_bitsadmin_download_psh_script.zip
+  source_sha256: 8fb7bc9f3d82f672dc39a55e50006137aa540c4a9860acdcc5d08a4fd609b594

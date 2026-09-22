@@ -1,0 +1,39 @@
+scenario_id: otrf_empire_launcher_vbs
+split: test
+origin: otrf
+description: OTRF-derived boxed case for otrf_empire_launcher_vbs
+window:
+  start: '2020-09-04T20:09:55.679000Z'
+  end: '2020-09-04T20:09:55.850000Z'
+alert:
+  alert_id: alr-cher_vbs
+  host: WORKSTATION5.theshire.local
+  fired_at: '2020-09-04T20:09:55.760000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0034
+gold:
+  verdict: malicious
+  techniques:
+  - T1059.001
+  - T1027
+  - T1204.002
+  root_pid: 2316
+  key_pids:
+  - 2316
+  - 2316
+  - 7700
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF empire_launcher_vbs.zip (empire_launcher_vbs).
+provenance:
+  catalog_id: empire_launcher_vbs
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/execution/host/empire_launcher_vbs.zip
+  source_sha256: 812da270cf8cda6f1948fb6275410f15dc1794d0bd6b623c9c25b2518285019c

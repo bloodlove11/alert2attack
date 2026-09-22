@@ -1,0 +1,34 @@
+scenario_id: otrf_empire_schtasks_creation_execution_elevated_user
+split: test
+origin: otrf
+description: OTRF-derived boxed case for otrf_empire_schtasks_creation_execution_elevated_user
+window:
+  start: '2020-09-21T21:58:15.003000Z'
+  end: '2020-09-21T21:58:17.661000Z'
+alert:
+  alert_id: alr-ted_user
+  host: WORKSTATION5.theshire.local
+  fired_at: '2020-09-21T21:58:17.613000Z'
+  rule_id: win_susp_schtask_creation
+  rule_title: Suspicious Scheduled Task Creation
+  severity: high
+  trigger_event_id: ev-0010
+gold:
+  verdict: malicious
+  techniques:
+  - T1053.005
+  key_pids: []
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF empire_schtasks_creation_execution_elevated_user.zip
+    (empire_schtasks_creation_execution_elevated_user).
+provenance:
+  catalog_id: empire_schtasks_creation_execution_elevated_user
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/persistence/host/empire_schtasks_creation_execution_elevated_user.zip
+  source_sha256: 74662dc5c52f4ac2fc9dcb336bae7fb4e101217169c65adf5784b03015501d3b

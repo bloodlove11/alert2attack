@@ -1,0 +1,42 @@
+scenario_id: otrf_empire_launcher_vbs_nee
+split: test
+origin: otrf
+description: 'Truncated real OTRF window from empire_launcher_vbs: trigger (+ parent
+  when present); insufficient evidence to decide.'
+window:
+  start: '2020-09-04T20:09:55.035000Z'
+  end: '2020-09-04T20:09:55.760000Z'
+alert:
+  alert_id: alr-_vbs_nee
+  host: WORKSTATION5.theshire.local
+  fired_at: '2020-09-04T20:09:55.760000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0002
+gold:
+  verdict: not_enough_evidence
+  techniques:
+  - T1059.001
+  - T1027
+  - T1204.002
+  root_pid: 2440
+  key_pids:
+  - 2440
+  - 2316
+  persistence_evidence: []
+  acceptable_actions:
+  - collect_script
+  - collect_memory
+  - escalate
+  - monitor
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF-NEE. Same OTRF source as otrf_empire_launcher_vbs, but
+    the boxed window retains only the alert trigger and limited parent context. Follow-on
+    child, network, file and registry evidence are outside the window; the correct
+    action is to abstain and collect more telemetry.
+provenance:
+  catalog_id: empire_launcher_vbs
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/execution/host/empire_launcher_vbs.zip
+  source_sha256: 812da270cf8cda6f1948fb6275410f15dc1794d0bd6b623c9c25b2518285019c

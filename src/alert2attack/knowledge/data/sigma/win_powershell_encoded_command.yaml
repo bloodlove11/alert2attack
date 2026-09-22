@@ -1,0 +1,42 @@
+title: Suspicious Encoded PowerShell Command Line
+slug: win_powershell_encoded_command
+status: stable
+description: >
+  Detects PowerShell started with an encoded command (-EncodedCommand / -enc / -e) combined
+  with options commonly used to hide execution (-NoProfile, -NonInteractive, -WindowStyle Hidden).
+  Encoded commands are a common way to smuggle download-and-execute stagers through
+  document macros and scheduled tasks, but are also used by legitimate management agents.
+references:
+  - https://github.com/SigmaHQ/sigma
+  - https://attack.mitre.org/techniques/T1059/001/
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.defense_evasion
+  - attack.t1027
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  selection_enc:
+    CommandLine|contains:
+      - ' -e '
+      - ' -ec '
+      - ' -enc '
+      - ' -EncodedCommand '
+  selection_hidden:
+    CommandLine|contains:
+      - ' -nop'
+      - ' -noni'
+      - ' -w hidden'
+      - ' -windowstyle hidden'
+  condition: selection_img and selection_enc and selection_hidden
+falsepositives:
+  - Endpoint management agents (SCCM/ConfigMgr, Intune, RMM tools) running inventory or
+    remediation scripts as SYSTEM with an encoded command
+  - Software installers and build agents that wrap scripts to avoid quoting issues
+level: high

@@ -1,0 +1,19 @@
+title: Suspicious Registry Run Key Modification
+slug: win_susp_run_key
+status: experimental
+description: >
+  Detects modifications under common Run/RunOnce autostart registry keys, used for
+  persistence and also by installers and enterprise agents.
+references:
+  - https://github.com/SigmaHQ/sigma
+  - https://attack.mitre.org/techniques/T1547/001/
+tags:
+  - attack.persistence
+  - attack.t1547.001
+level: medium
+falsepositives:
+  - Software installers writing Run keys during setup
+detection:
+  selection:
+    TargetObject|contains: '\CurrentVersion\Run'
+  condition: selection

@@ -1,0 +1,45 @@
+# Local secrets — keep a tracked `.env.example` if one is added.
+.env
+.env.*
+!.env.example
+
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+*.sqlite
+reports/
+datasets/raw/
+
+# Train / fine-tune artifacts — do not commit weights or caches.
+# Keep tests/fixtures/train/ and src/alert2attack/train/ tracked (these patterns are root-only or extensions).
+*.gguf
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+adapter_model.bin
+adapter_model.safetensors
+.cache/
+wandb/
+huggingface/
+hf_cache/
+
+# Common local train output dirs (root of a checkout / Studio workdir)
+/artifacts/
+/adapters/
+/checkpoints/
+/gguf/
+/lora/
+/lora-out/
+/qlora/
+/qlora-out/
+/outputs/
+/exp004-n14/
+/exp005-graph-only/
+
+# Generated from the running app; regenerate with the command in web/README.md
+/openapi.json

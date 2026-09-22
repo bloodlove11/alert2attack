@@ -1,0 +1,109 @@
+{
+  "generated_at": "2026-09-16T14:20:54Z",
+  "dataset_hash": "5ffa17a659505a1b",
+  "model": "gpt-5.6-luna",
+  "arm": "agent-teacher",
+  "split": "dev",
+  "budget": "unbounded (max_tool_calls=max_llm_calls=timeout_s=None, max_investigate_turns=0)",
+  "lever": "thin-window NEE-twin abstain (lever 5) + lever 4 in tree",
+  "eval": {
+    "n": 20,
+    "verdict_accuracy": 0.7,
+    "mean_verdict_cost": 1.0,
+    "mean_citation_validity_post": 1.0,
+    "mean_key_pid_recall": 1.0,
+    "action_safety_rate": 0.95,
+    "budget_exhaustion_rate": 0.0,
+    "mean_tool_calls": 14.4,
+    "mean_llm_calls": 9.6
+  },
+  "vs_lever4_2026_09_16": {
+    "verdict_accuracy": "0.55 → 0.70",
+    "mean_verdict_cost": "1.05 → 1.00",
+    "mean_key_pid_recall": "1.00 → 1.00",
+    "action_safety_rate": "1.00 → 0.95",
+    "budget_exhaustion_rate": "0.00 → 0.00",
+    "mean_tool_calls": "14.3 → 14.4",
+    "n_kept": "11 → 14"
+  },
+  "filter_revision": "DR-012",
+  "prefer_correct_verdict": true,
+  "n_in": 20,
+  "n_kept": 14,
+  "n_dropped": 6,
+  "dropped_by_reason": {
+    "invalid_row": 0,
+    "not_dev_split": 0,
+    "bad_verification": 0,
+    "citation_unavailable": 0,
+    "citation_below_threshold": 0,
+    "verdict_mismatch": 0,
+    "degraded_no_verdict_match": 6
+  },
+  "degraded_kept": 14,
+  "n_kept_with_nonempty_messages": 14,
+  "n_cases_tools_gt_12": 17,
+  "ready": true,
+  "smoke_sft_discuss_clears": true,
+  "full_lora_n_ok": true,
+  "kill_filtered_n_lt_8": false,
+  "kill_filtered_n_lt_12": false,
+  "unsafe_case": {
+    "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+    "pred_verdict": "likely_benign",
+    "gold_verdict": "malicious",
+    "note": "Not thin-window (48 events). Write conservatism / likely_benign FP. Dev only; not a headline row."
+  },
+  "case_deltas_vs_lever4": {
+    "mshta_nee_twin": "false-malicious DROP → thin-window NEE KEEP (lever 5)",
+    "launcher_nee_twin": "false-malicious DROP → thin-window NEE KEEP (lever 5)",
+    "psh_mshta_nee_twin": "false-malicious DROP → thin-window NEE KEEP (lever 5)",
+    "psexec": "degraded suspicious DROP → degraded malicious KEEP (live luna; empty techniques)",
+    "mshta_gold_malicious": "degraded malicious KEEP → degraded suspicious DROP (live luna; empty techniques; window is not thin)"
+  },
+  "dropped_rows": [
+    {
+      "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "likely_benign",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "not_enough_evidence",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "suspicious",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "likely_benign",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_psh_powershell_httplistener",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "not_enough_evidence",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_wmic_remote_xsl_jscript",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "not_enough_evidence",
+      "reason": "degraded_no_verdict_match"
+    }
+  ],
+  "notes": "JSONL gitignored at reports/distill/teacher-dev-unbounded-lever5.jsonl. All three NEE twins kept via the thin-window ceiling. Dev verdict_acc 0.55→0.70 is exactly those three matches (3/20). Not a README headline row. Official test not re-run. Not a launch. DR-012 not loosened."
+}

@@ -1,0 +1,38 @@
+scenario_id: otrf_cmd_mshta_javascript_getobject_sct
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_mshta_javascript_getobject_sct
+window:
+  start: '2020-10-22T06:21:37.847000Z'
+  end: '2020-10-22T06:21:38.203000Z'
+alert:
+  alert_id: alr-ject_sct
+  host: WORKSTATION5
+  fired_at: '2020-10-22T06:21:37.849000Z'
+  rule_id: win_susp_mshta
+  rule_title: Mshta Proxy Execution
+  severity: high
+  trigger_event_id: ev-0012
+gold:
+  verdict: malicious
+  techniques:
+  - T1218.005
+  - T1059.001
+  root_pid: 10076
+  key_pids:
+  - 10076
+  - 10076
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_mshta_javascript_getobject_sct.zip
+    (cmd_mshta_javascript_getobject_sct).
+provenance:
+  catalog_id: cmd_mshta_javascript_getobject_sct
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/cmd_mshta_javascript_getobject_sct.zip
+  source_sha256: 976a705690dcc296ba132b9cd594c004265911e9e40d402c879dd06eddbbc057

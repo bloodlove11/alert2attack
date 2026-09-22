@@ -1,0 +1,18 @@
+{
+  "n_cases": 14,
+  "n_train_cases": 12,
+  "holdout_ids": [
+    "otrf_psh_mshta_html_application_execution_nee",
+    "otrf_psh_python_webserver"
+  ],
+  "smoke": false,
+  "n_train_threads": 117,
+  "n_eval_threads": 19,
+  "dropped_empty_target": 0,
+  "dropped_not_dev": 0,
+  "full_lora_n_ok": true,
+  "smoke_sft_discuss_clears": true,
+  "input": "reports/distill/teacher-dev-unbounded-lever5.filtered.jsonl",
+  "output": "reports/distill/sft-lever5-n14.jsonl",
+  "summary": "reports/distill/sft-lever5-n14.summary.json"
+}

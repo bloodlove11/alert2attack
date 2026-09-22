@@ -1,0 +1,4498 @@
+{
+  "generated_at": "2026-09-20T03:49:23+00:00",
+  "embedder": "BAAI/bge-small-en-v1.5",
+  "corpus_source": "catalog:attack_catalog.json",
+  "catalog_revision": "ATT&CK v19.2",
+  "n_techniques": 697,
+  "n_cases_total": 20,
+  "n_cases_scored": 17,
+  "unreachable_gold": {
+    "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry": [
+      "T1562.002"
+    ]
+  },
+  "scrubbed_ids": {
+    "otrf_cmd_bitsadmin_download_psh_script": [
+      "T1197"
+    ],
+    "otrf_cmd_mshta_javascript_getobject_sct": [
+      "T1218.005"
+    ],
+    "otrf_cmd_mshta_javascript_getobject_sct_nee": [
+      "T1218.005"
+    ],
+    "otrf_psh_mshta_html_application_execution": [
+      "T1218.005"
+    ],
+    "otrf_psh_mshta_html_application_execution_nee": [
+      "T1218.005"
+    ]
+  },
+  "gold_ids_in_raw_telemetry": {
+    "otrf_cmd_bitsadmin_download_psh_script": [
+      "T1197"
+    ],
+    "otrf_cmd_mshta_javascript_getobject_sct": [
+      "T1218.005"
+    ],
+    "otrf_cmd_mshta_javascript_getobject_sct_nee": [
+      "T1218.005"
+    ],
+    "otrf_psh_mshta_html_application_execution": [
+      "T1218.005"
+    ],
+    "otrf_psh_mshta_html_application_execution_nee": [
+      "T1218.005"
+    ]
+  },
+  "primary_query": "alert+cmdline",
+  "headline_k": 5,
+  "methods": [
+    {
+      "query_variant": "alert",
+      "mode": "lexical",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.4901960784313726,
+        "hit@1": 0.4117647058823529,
+        "recall@1": 0.3235294117647059,
+        "hit@3": 0.6470588235294118,
+        "recall@3": 0.4411764705882353,
+        "hit@5": 0.6470588235294118,
+        "recall@5": 0.4411764705882353,
+        "hit@10": 0.6470588235294118,
+        "recall@10": 0.4411764705882353
+      },
+      "ci": {
+        "mrr": [
+          0.27450980392156865,
+          0.7058823529411765
+        ],
+        "hit@1": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@1": [
+          0.11764705882352941,
+          0.5294117647058824
+        ],
+        "hit@3": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@3": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@5": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@5": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@10": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@10": [
+          0.2647058823529412,
+          0.6176470588235294
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 3,
+          "hit": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.3333333333333333
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 3,
+          "hit": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.3333333333333333
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 3,
+          "hit": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.3333333333333333
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 3,
+          "hit": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.3333333333333333
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    },
+    {
+      "query_variant": "alert",
+      "mode": "dense",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.6617647058823529,
+        "hit@1": 0.6470588235294118,
+        "recall@1": 0.4411764705882353,
+        "hit@3": 0.6470588235294118,
+        "recall@3": 0.4411764705882353,
+        "hit@5": 0.7058823529411765,
+        "recall@5": 0.47058823529411764,
+        "hit@10": 0.7058823529411765,
+        "recall@10": 0.47058823529411764
+      },
+      "ci": {
+        "mrr": [
+          0.4264705882352941,
+          0.8823529411764706
+        ],
+        "hit@1": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@1": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@3": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@3": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@5": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@5": [
+          0.29411764705882354,
+          0.6470588235294118
+        ],
+        "hit@10": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@10": [
+          0.29411764705882354,
+          0.6470588235294118
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 4,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.25
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    },
+    {
+      "query_variant": "alert",
+      "mode": "hybrid",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.65,
+        "hit@1": 0.6470588235294118,
+        "recall@1": 0.4411764705882353,
+        "hit@3": 0.6470588235294118,
+        "recall@3": 0.4411764705882353,
+        "hit@5": 0.6470588235294118,
+        "recall@5": 0.4411764705882353,
+        "hit@10": 0.6470588235294118,
+        "recall@10": 0.4411764705882353
+      },
+      "ci": {
+        "mrr": [
+          0.41470588235294115,
+          0.8823529411764706
+        ],
+        "hit@1": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@1": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@3": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@3": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@5": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@5": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@10": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@10": [
+          0.2647058823529412,
+          0.6176470588235294
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 20,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.05
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    },
+    {
+      "query_variant": "cmdline",
+      "mode": "lexical",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.47176086120722804,
+        "hit@1": 0.4117647058823529,
+        "recall@1": 0.2647058823529412,
+        "hit@3": 0.4117647058823529,
+        "recall@3": 0.2647058823529412,
+        "hit@5": 0.5882352941176471,
+        "recall@5": 0.35294117647058826,
+        "hit@10": 0.7058823529411765,
+        "recall@10": 0.5
+      },
+      "ci": {
+        "mrr": [
+          0.26653210303729336,
+          0.6864667435601691
+        ],
+        "hit@1": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@1": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@3": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@3": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@5": [
+          0.35294117647058826,
+          0.8235294117647058
+        ],
+        "recall@5": [
+          0.20588235294117646,
+          0.5294117647058824
+        ],
+        "hit@10": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@10": [
+          0.3235294117647059,
+          0.6764705882352942
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 4,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.25
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 4,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.25
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 10,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "mrr": 0.1
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 4,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.25
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 9,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.5
+          },
+          "mrr": 0.1111111111111111
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 17,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.058823529411764705
+        }
+      ]
+    },
+    {
+      "query_variant": "cmdline",
+      "mode": "dense",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.5367094206103493,
+        "hit@1": 0.5294117647058824,
+        "recall@1": 0.3235294117647059,
+        "hit@3": 0.5294117647058824,
+        "recall@3": 0.38235294117647056,
+        "hit@5": 0.5294117647058824,
+        "recall@5": 0.38235294117647056,
+        "hit@10": 0.5294117647058824,
+        "recall@10": 0.38235294117647056
+      },
+      "ci": {
+        "mrr": [
+          0.3014153029632906,
+          0.76890756302521
+        ],
+        "hit@1": [
+          0.29411764705882354,
+          0.7647058823529411
+        ],
+        "recall@1": [
+          0.17647058823529413,
+          0.5
+        ],
+        "hit@3": [
+          0.29411764705882354,
+          0.7647058823529411
+        ],
+        "recall@3": [
+          0.20588235294117646,
+          0.5882352941176471
+        ],
+        "hit@5": [
+          0.29411764705882354,
+          0.7647058823529411
+        ],
+        "recall@5": [
+          0.20588235294117646,
+          0.5882352941176471
+        ],
+        "hit@10": [
+          0.29411764705882354,
+          0.7647058823529411
+        ],
+        "recall@10": [
+          0.20588235294117646,
+          0.5882352941176471
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 19,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.05263157894736842
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 14,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.07142857142857142
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    },
+    {
+      "query_variant": "cmdline",
+      "mode": "hybrid",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.5679271708683473,
+        "hit@1": 0.5294117647058824,
+        "recall@1": 0.3235294117647059,
+        "hit@3": 0.5882352941176471,
+        "recall@3": 0.4117647058823529,
+        "hit@5": 0.6470588235294118,
+        "recall@5": 0.4411764705882353,
+        "hit@10": 0.6470588235294118,
+        "recall@10": 0.4411764705882353
+      },
+      "ci": {
+        "mrr": [
+          0.34173669467787116,
+          0.7878151260504201
+        ],
+        "hit@1": [
+          0.29411764705882354,
+          0.7647058823529411
+        ],
+        "recall@1": [
+          0.17647058823529413,
+          0.5
+        ],
+        "hit@3": [
+          0.35294117647058826,
+          0.8235294117647058
+        ],
+        "recall@3": [
+          0.23529411764705882,
+          0.5882352941176471
+        ],
+        "hit@5": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@5": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@10": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@10": [
+          0.2647058823529412,
+          0.6176470588235294
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 3,
+          "hit": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.3333333333333333
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 14,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.07142857142857142
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 4,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.25
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    },
+    {
+      "query_variant": "window",
+      "mode": "lexical",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.43434256055363324,
+        "hit@1": 0.4117647058823529,
+        "recall@1": 0.2647058823529412,
+        "hit@3": 0.4117647058823529,
+        "recall@3": 0.2647058823529412,
+        "hit@5": 0.47058823529411764,
+        "recall@5": 0.29411764705882354,
+        "hit@10": 0.5294117647058824,
+        "recall@10": 0.4117647058823529
+      },
+      "ci": {
+        "mrr": [
+          0.21081314878892735,
+          0.6622837370242215
+        ],
+        "hit@1": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@1": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@3": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@3": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@5": [
+          0.23529411764705882,
+          0.7058823529411765
+        ],
+        "recall@5": [
+          0.14705882352941177,
+          0.47058823529411764
+        ],
+        "hit@10": [
+          0.29411764705882354,
+          0.7647058823529411
+        ],
+        "recall@10": [
+          0.20588235294117646,
+          0.6176470588235294
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 5,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.5,
+            "10": 1.0
+          },
+          "mrr": 0.2
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 8,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "mrr": 0.125
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 17,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.058823529411764705
+        }
+      ]
+    },
+    {
+      "query_variant": "window",
+      "mode": "dense",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.41711229946524064,
+        "hit@1": 0.4117647058823529,
+        "recall@1": 0.2647058823529412,
+        "hit@3": 0.4117647058823529,
+        "recall@3": 0.2647058823529412,
+        "hit@5": 0.4117647058823529,
+        "recall@5": 0.2647058823529412,
+        "hit@10": 0.4117647058823529,
+        "recall@10": 0.2647058823529412
+      },
+      "ci": {
+        "mrr": [
+          0.18181818181818182,
+          0.6524064171122995
+        ],
+        "hit@1": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@1": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@3": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@3": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@5": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@5": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@10": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@10": [
+          0.11764705882352941,
+          0.4411764705882353
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 11,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.09090909090909091
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    },
+    {
+      "query_variant": "window",
+      "mode": "hybrid",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.43491415705037995,
+        "hit@1": 0.4117647058823529,
+        "recall@1": 0.2647058823529412,
+        "hit@3": 0.4117647058823529,
+        "recall@3": 0.2647058823529412,
+        "hit@5": 0.47058823529411764,
+        "recall@5": 0.29411764705882354,
+        "hit@10": 0.47058823529411764,
+        "recall@10": 0.35294117647058826
+      },
+      "ci": {
+        "mrr": [
+          0.21115958345060512,
+          0.6617647058823529
+        ],
+        "hit@1": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@1": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@3": [
+          0.17647058823529413,
+          0.6470588235294118
+        ],
+        "recall@3": [
+          0.11764705882352941,
+          0.4411764705882353
+        ],
+        "hit@5": [
+          0.23529411764705882,
+          0.7058823529411765
+        ],
+        "recall@5": [
+          0.14705882352941177,
+          0.47058823529411764
+        ],
+        "hit@10": [
+          0.23529411764705882,
+          0.7058823529411765
+        ],
+        "recall@10": [
+          0.17647058823529413,
+          0.5588235294117647
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 4,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.25
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 11,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.09090909090909091
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 19,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.05263157894736842
+        }
+      ]
+    },
+    {
+      "query_variant": "alert+cmdline",
+      "mode": "lexical",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.6323529411764706,
+        "hit@1": 0.5882352941176471,
+        "recall@1": 0.4117647058823529,
+        "hit@3": 0.6470588235294118,
+        "recall@3": 0.4411764705882353,
+        "hit@5": 0.7058823529411765,
+        "recall@5": 0.5294117647058824,
+        "hit@10": 0.7647058823529411,
+        "recall@10": 0.5588235294117647
+      },
+      "ci": {
+        "mrr": [
+          0.41666666666666663,
+          0.8333333333333333
+        ],
+        "hit@1": [
+          0.35294117647058826,
+          0.8235294117647058
+        ],
+        "recall@1": [
+          0.23529411764705882,
+          0.5882352941176471
+        ],
+        "hit@3": [
+          0.4117647058823529,
+          0.8235294117647058
+        ],
+        "recall@3": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@5": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@5": [
+          0.35294117647058826,
+          0.7058823529411765
+        ],
+        "hit@10": [
+          0.5294117647058824,
+          0.9411764705882353
+        ],
+        "recall@10": [
+          0.38235294117647056,
+          0.7352941176470589
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 4,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.25
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 3,
+          "hit": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.3333333333333333
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 6,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.5
+          },
+          "mrr": 0.16666666666666666
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    },
+    {
+      "query_variant": "alert+cmdline",
+      "mode": "dense",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.6666666666666667,
+        "hit@1": 0.6470588235294118,
+        "recall@1": 0.4411764705882353,
+        "hit@3": 0.7058823529411765,
+        "recall@3": 0.47058823529411764,
+        "hit@5": 0.7058823529411765,
+        "recall@5": 0.47058823529411764,
+        "hit@10": 0.7058823529411765,
+        "recall@10": 0.47058823529411764
+      },
+      "ci": {
+        "mrr": [
+          0.4313725490196078,
+          0.8823529411764706
+        ],
+        "hit@1": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@1": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@3": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@3": [
+          0.29411764705882354,
+          0.6470588235294118
+        ],
+        "hit@5": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@5": [
+          0.29411764705882354,
+          0.6470588235294118
+        ],
+        "hit@10": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@10": [
+          0.29411764705882354,
+          0.6470588235294118
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 3,
+          "hit": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.3333333333333333
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    },
+    {
+      "query_variant": "alert+cmdline",
+      "mode": "hybrid",
+      "n_cases": 17,
+      "metrics": {
+        "mrr": 0.6862745098039216,
+        "hit@1": 0.6470588235294118,
+        "recall@1": 0.4411764705882353,
+        "hit@3": 0.7058823529411765,
+        "recall@3": 0.47058823529411764,
+        "hit@5": 0.7058823529411765,
+        "recall@5": 0.5294117647058824,
+        "hit@10": 0.7647058823529411,
+        "recall@10": 0.5588235294117647
+      },
+      "ci": {
+        "mrr": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "hit@1": [
+          0.4117647058823529,
+          0.8823529411764706
+        ],
+        "recall@1": [
+          0.2647058823529412,
+          0.6176470588235294
+        ],
+        "hit@3": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@3": [
+          0.29411764705882354,
+          0.6470588235294118
+        ],
+        "hit@5": [
+          0.47058823529411764,
+          0.8823529411764706
+        ],
+        "recall@5": [
+          0.35294117647058826,
+          0.7058823529411765
+        ],
+        "hit@10": [
+          0.5294117647058824,
+          0.9411764705882353
+        ],
+        "recall@10": [
+          0.38235294117647056,
+          0.7352941176470589
+        ]
+      },
+      "per_case": [
+        {
+          "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 6,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.5
+          },
+          "mrr": 0.16666666666666666
+        },
+        {
+          "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+          "n_gold_reachable": 1,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_cmd_lsass_memory_dumpert_syscalls",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        },
+        {
+          "scenario_id": "otrf_covenant_installutil",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 2,
+          "hit": {
+            "1": 0.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 0.5
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_elevated_user",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+          "n_gold_reachable": 1,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_powershell_httplistener",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_psh_python_webserver",
+          "n_gold_reachable": 2,
+          "first_gold_rank": 1,
+          "hit": {
+            "1": 1.0,
+            "3": 1.0,
+            "5": 1.0,
+            "10": 1.0
+          },
+          "recall": {
+            "1": 0.5,
+            "3": 0.5,
+            "5": 0.5,
+            "10": 0.5
+          },
+          "mrr": 1.0
+        },
+        {
+          "scenario_id": "otrf_wmic_remote_xsl_jscript",
+          "n_gold_reachable": 2,
+          "first_gold_rank": null,
+          "hit": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "recall": {
+            "1": 0.0,
+            "3": 0.0,
+            "5": 0.0,
+            "10": 0.0
+          },
+          "mrr": 0.0
+        }
+      ]
+    }
+  ],
+  "random_reference": {
+    "hit@1": 0.0023630686133851407,
+    "recall@1": 0.0014347202295552368,
+    "hit@3": 0.007081202836846421,
+    "recall@3": 0.00430416068866571,
+    "hit@5": 0.011788666389229244,
+    "recall@5": 0.007173601147776184,
+    "hit@10": 0.023510641084217826,
+    "recall@10": 0.014347202295552367,
+    "mrr": 0.01499584005529292
+  },
+  "paired": {
+    "alert": {
+      "alert|dense-lexical|recall@5": [
+        0.029411764705882353,
+        0.0,
+        0.08823529411764706
+      ],
+      "alert|dense-lexical|mrr": [
+        0.17156862745098042,
+        0.05392156862745098,
+        0.3186274509803922
+      ],
+      "alert|hybrid-lexical|recall@5": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "alert|hybrid-lexical|mrr": [
+        0.15980392156862747,
+        0.04215686274509805,
+        0.3137254901960785
+      ]
+    },
+    "alert+cmdline": {
+      "alert+cmdline|dense-lexical|recall@5": [
+        -0.058823529411764705,
+        -0.17647058823529413,
+        0.058823529411764705
+      ],
+      "alert+cmdline|dense-lexical|mrr": [
+        0.03431372549019608,
+        -0.10784313725490197,
+        0.1911764705882353
+      ],
+      "alert+cmdline|hybrid-lexical|recall@5": [
+        0.0,
+        -0.08823529411764706,
+        0.08823529411764706
+      ],
+      "alert+cmdline|hybrid-lexical|mrr": [
+        0.05392156862745098,
+        -0.06372549019607843,
+        0.20588235294117646
+      ]
+    },
+    "window": {
+      "window|dense-lexical|recall@5": [
+        -0.029411764705882353,
+        -0.08823529411764706,
+        0.0
+      ],
+      "window|dense-lexical|mrr": [
+        -0.01723026108839257,
+        -0.16388801509908776,
+        0.12647058823529414
+      ],
+      "window|hybrid-lexical|recall@5": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "window|hybrid-lexical|mrr": [
+        0.0005715964967467453,
+        -0.1323529411764706,
+        0.1384426582341352
+      ]
+    },
+    "cmdline": {
+      "cmdline|dense-lexical|recall@5": [
+        0.029411764705882353,
+        -0.058823529411764705,
+        0.11764705882352941
+      ],
+      "cmdline|dense-lexical|mrr": [
+        0.06494855940312141,
+        -0.12546620299306513,
+        0.2530959752321981
+      ],
+      "cmdline|hybrid-lexical|recall@5": [
+        0.08823529411764706,
+        0.0,
+        0.17647058823529413
+      ],
+      "cmdline|hybrid-lexical|mrr": [
+        0.09616630966111935,
+        -0.06401109463393201,
+        0.26792717086834733
+      ]
+    }
+  },
+  "notes": []
+}

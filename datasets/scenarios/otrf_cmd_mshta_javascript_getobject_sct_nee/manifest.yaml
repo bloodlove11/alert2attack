@@ -1,0 +1,41 @@
+scenario_id: otrf_cmd_mshta_javascript_getobject_sct_nee
+split: dev
+origin: otrf
+description: 'Truncated real OTRF window from cmd_mshta_javascript_getobject_sct:
+  trigger (+ parent when present); insufficient evidence to decide.'
+window:
+  start: '2020-10-22T06:21:37.849000Z'
+  end: '2020-10-22T06:21:37.850000Z'
+alert:
+  alert_id: alr-_sct_nee
+  host: WORKSTATION5
+  fired_at: '2020-10-22T06:21:37.849000Z'
+  rule_id: win_susp_mshta
+  rule_title: Mshta Proxy Execution
+  severity: high
+  trigger_event_id: ev-0001
+gold:
+  verdict: not_enough_evidence
+  techniques:
+  - T1218.005
+  - T1059.001
+  root_pid: 10076
+  key_pids:
+  - 10076
+  - 10076
+  persistence_evidence: []
+  acceptable_actions:
+  - collect_script
+  - collect_memory
+  - escalate
+  - monitor
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF-NEE. Same OTRF source as otrf_cmd_mshta_javascript_getobject_sct,
+    but the boxed window retains only the alert trigger and limited parent context.
+    Follow-on child, network, file and registry evidence are outside the window; the
+    correct action is to abstain and collect more telemetry.
+provenance:
+  catalog_id: cmd_mshta_javascript_getobject_sct
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/cmd_mshta_javascript_getobject_sct.zip
+  source_sha256: 976a705690dcc296ba132b9cd594c004265911e9e40d402c879dd06eddbbc057

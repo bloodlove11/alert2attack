@@ -1,0 +1,55 @@
+{
+  "generated_at": "2026-09-16T15:23:16.916529+00:00",
+  "experiment": "EXP-002-lever6-dev-smoke",
+  "dataset_hash": "5ffa17a659505a1b",
+  "arm": "agent-local-7b",
+  "split": "dev",
+  "n": 3,
+  "limit": 3,
+  "headline": false,
+  "official_test_run": false,
+  "ollama_tag": "qwen2.5:7b-instruct",
+  "ollama_digest": "845dbda0ea48",
+  "gpu": "Lightning Studio Machine.T4",
+  "gpu_placement": "100%",
+  "start": "2026-09-16T15:18:44Z",
+  "end": "2026-09-16T15:23:17Z",
+  "eval_exit": 0,
+  "verdict_accuracy": 0.6666666666666666,
+  "mean_verdict_cost": 1.0,
+  "mean_citation_validity_post": 1.0,
+  "mean_key_pid_recall": 1.0,
+  "action_safety_rate": 1.0,
+  "mean_tool_calls": 5.0,
+  "budget_exhaustion_rate": 0.0,
+  "exp001_local_action_safety": 0.923,
+  "exp004_smoke_action_safety": 0.67,
+  "kill_action_safety_down": false,
+  "cases": [
+    {
+      "scenario_id": "otrf_auditpol_system_user_auditpolicy_modification_benign_lsass",
+      "verdict_match": true,
+      "action_safe": true,
+      "pred_verdict": "likely_benign",
+      "gold_verdict": "likely_benign",
+      "pre_repair_verdict": "malicious"
+    },
+    {
+      "scenario_id": "otrf_cmd_bitsadmin_download_psh_script",
+      "verdict_match": true,
+      "action_safe": true,
+      "pred_verdict": "malicious",
+      "gold_verdict": "malicious",
+      "pre_repair_verdict": "malicious"
+    },
+    {
+      "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+      "verdict_match": false,
+      "action_safe": true,
+      "pred_verdict": "not_enough_evidence",
+      "gold_verdict": "malicious",
+      "pre_repair_verdict": "not_enough_evidence"
+    }
+  ],
+  "notes": "Same --split dev --limit 3 set as EXP-004 QLoRA smoke. Untuned 7B + lever 6. LSASS pre_repair was malicious; ceiling left likely_benign and action_safe. action_safety 1.00 is not down vs EXP-001 local 0.923. Not a headline row. Official test not run. DR-012 not loosened. n_kept still 14."
+}

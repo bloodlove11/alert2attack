@@ -1,0 +1,38 @@
+scenario_id: otrf_cmd_userinitmprlogonscript_batch
+split: test
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_userinitmprlogonscript_batch
+window:
+  start: '2020-10-20T02:47:00.011000Z'
+  end: '2020-10-20T02:47:13.948000Z'
+alert:
+  alert_id: alr-pt_batch
+  host: WORKSTATION5
+  fired_at: '2020-10-20T02:47:08.745000Z'
+  rule_id: win_susp_run_key
+  rule_title: Registry Run Key Persistence
+  severity: high
+  trigger_event_id: ev-0011
+gold:
+  verdict: malicious
+  techniques:
+  - T1037.001
+  - T1059.003
+  root_pid: 8684
+  key_pids:
+  - 8684
+  - 8684
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_userinitmprlogonscript_batch.zip
+    (cmd_userinitmprlogonscript_batch).
+provenance:
+  catalog_id: cmd_userinitmprlogonscript_batch
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/persistence/host/cmd_userinitmprlogonscript_batch.zip
+  source_sha256: 53a01d6976b7567a2464628d850c51cc48b1a91a932cd2b0e110a510bcedf858

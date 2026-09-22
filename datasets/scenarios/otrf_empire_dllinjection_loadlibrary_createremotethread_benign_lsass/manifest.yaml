@@ -1,0 +1,37 @@
+scenario_id: otrf_empire_dllinjection_loadlibrary_createremotethread_benign_lsass
+split: test
+origin: otrf
+description: 'OTRF background window: svchost.exe accessed LSASS (common false positive
+  for credential-dumping rules).'
+window:
+  start: '2020-07-22T04:00:48.715000Z'
+  end: '2020-07-22T04:02:00.010000Z'
+alert:
+  alert_id: alr-gn_lsass
+  host: WORKSTATION5.mordor.local
+  fired_at: '2020-07-22T04:01:03.754000Z'
+  rule_id: win_susp_lsass_access
+  rule_title: LSASS Memory Access
+  severity: high
+  trigger_event_id: ev-0026
+gold:
+  verdict: likely_benign
+  techniques: []
+  root_pid: 396
+  key_pids:
+  - 396
+  persistence_evidence: []
+  acceptable_actions:
+  - close_as_benign
+  - monitor
+  unacceptable_actions:
+  - isolate_host
+  - kill_process
+  narrative: 'GOLD-MARKER-OTRF-BENIGN. Real OTRF telemetry slice from empire_dllinjection_loadlibrary_createremotethread:
+    svchost.exe (pid 396) accessed lsass.exe with GrantedAccess=0x1000. No attacker
+    LOLBIN or dump tool is present in this boxed window; this is a known false-positive
+    class for LSASS-access detections.'
+provenance:
+  catalog_id: empire_dllinjection_loadlibrary_createremotethread
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/empire_dllinjection_LoadLibrary_CreateRemoteThread.zip
+  source_sha256: 98071a478f57f2ca71530c4cb839f2054da0e6bd8b106caaa5d9518d1be0ccc8

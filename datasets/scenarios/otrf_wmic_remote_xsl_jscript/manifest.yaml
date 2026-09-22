@@ -1,0 +1,37 @@
+scenario_id: otrf_wmic_remote_xsl_jscript
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_wmic_remote_xsl_jscript
+window:
+  start: '2020-10-18T06:17:06.289000Z'
+  end: '2020-10-18T06:17:06.382000Z'
+alert:
+  alert_id: alr-_jscript
+  host: WORKSTATION5
+  fired_at: '2020-10-18T06:17:06.330000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0012
+gold:
+  verdict: malicious
+  techniques:
+  - T1047
+  - T1220
+  root_pid: 2760
+  key_pids:
+  - 2760
+  - 2760
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF wmic_remote_xsl_jscript.zip (wmic_remote_xsl_jscript).
+provenance:
+  catalog_id: wmic_remote_xsl_jscript
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/wmic_remote_xsl_jscript.zip
+  source_sha256: f5766221059189dafc8b826abeecd46708bb8e5b21a480ecad6aa0a37f382320

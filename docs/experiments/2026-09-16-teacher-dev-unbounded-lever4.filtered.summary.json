@@ -1,0 +1,123 @@
+{
+  "generated_at": "2026-09-16T12:03:32.383971+00:00",
+  "dataset_hash": "5ffa17a659505a1b",
+  "model": "gpt-5.6-luna",
+  "arm": "agent-teacher",
+  "split": "dev",
+  "budget": "unbounded (max_tool_calls=max_llm_calls=timeout_s=None, max_investigate_turns=0)",
+  "lever": "write-summary sentence hygiene (lever 4) in tree",
+  "eval": {
+    "n": 20,
+    "verdict_accuracy": 0.55,
+    "mean_verdict_cost": 1.05,
+    "mean_citation_validity_post": 1.0,
+    "mean_key_pid_recall": 1.0,
+    "action_safety_rate": 1.0,
+    "budget_exhaustion_rate": 0.0,
+    "mean_tool_calls": 14.3,
+    "mean_llm_calls": 9.6
+  },
+  "vs_unbounded_2026_09_15": {
+    "verdict_accuracy": "0.55 \u2192 0.55",
+    "mean_verdict_cost": "1.05 \u2192 1.05",
+    "mean_key_pid_recall": "0.85 \u2192 1.00",
+    "budget_exhaustion_rate": "0.00 \u2192 0.00",
+    "mean_tool_calls": "14.15 \u2192 14.3",
+    "n_kept": "11 \u2192 11"
+  },
+  "filter_revision": "DR-012",
+  "prefer_correct_verdict": true,
+  "n_in": 20,
+  "n_kept": 11,
+  "n_dropped": 9,
+  "dropped_by_reason": {
+    "invalid_row": 0,
+    "not_dev_split": 0,
+    "bad_verification": 0,
+    "citation_unavailable": 0,
+    "citation_below_threshold": 0,
+    "verdict_mismatch": 0,
+    "degraded_no_verdict_match": 9
+  },
+  "degraded_kept": 11,
+  "n_kept_with_nonempty_messages": 11,
+  "n_cases_tools_gt_12": 17,
+  "ready": true,
+  "smoke_sft_discuss_clears": true,
+  "full_lora_n_ok": false,
+  "kill_filtered_n_lt_8": false,
+  "kill_filtered_n_lt_12": true,
+  "case_deltas_vs_2026_09_15": {
+    "mshta_gold_malicious": "parse-fail NEE stub (passed, mismatch, key-pid 0) \u2192 degraded malicious+T1218.005 KEEP",
+    "mshta_nee_twin": "NEE stub luckily matched gold NEE (KEEP) \u2192 degraded false-malicious DROP",
+    "psexec": "degraded malicious KEEP \u2192 degraded suspicious DROP",
+    "covenant_installutil": "degraded suspicious DROP \u2192 degraded malicious KEEP",
+    "wmic": "parse-fail NEE stub (passed, mismatch) \u2192 degraded NEE vs gold malicious DROP (expected)"
+  },
+  "dropped_rows": [
+    {
+      "scenario_id": "otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "likely_benign",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_cmd_dumping_ntds_dit_file_ntdsutil",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "not_enough_evidence",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_cmd_mshta_javascript_getobject_sct_nee",
+      "verification_status": "degraded",
+      "gold_verdict": "not_enough_evidence",
+      "pred_verdict": "malicious",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_cmd_psexec_lsa_secrets_dump",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "suspicious",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_empire_launcher_sct_regsvr32_nee",
+      "verification_status": "degraded",
+      "gold_verdict": "not_enough_evidence",
+      "pred_verdict": "malicious",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_empire_persistence_registry_modification_run_keys_standard_user",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "not_enough_evidence",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_psh_mshta_html_application_execution_nee",
+      "verification_status": "degraded",
+      "gold_verdict": "not_enough_evidence",
+      "pred_verdict": "malicious",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_psh_powershell_httplistener",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "not_enough_evidence",
+      "reason": "degraded_no_verdict_match"
+    },
+    {
+      "scenario_id": "otrf_wmic_remote_xsl_jscript",
+      "verification_status": "degraded",
+      "gold_verdict": "malicious",
+      "pred_verdict": "not_enough_evidence",
+      "reason": "degraded_no_verdict_match"
+    }
+  ],
+  "notes": "JSONL gitignored at reports/distill/teacher-dev-unbounded-lever4.jsonl. Lever 4 kept the mshta gold write; live teacher variance moved two other rows so n_kept stayed 11. Not a launch. Official test not re-run."
+}

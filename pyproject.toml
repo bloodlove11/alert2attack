@@ -1,0 +1,85 @@
+[project]
+name = "alert2attack"
+version = "0.1.0"
+description = "Sourced case files from EDR alerts: a tool-using investigation agent over endpoint telemetry"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.141.1",
+  "httpx>=0.28.1",
+  "langgraph>=1.2.11",
+  "openai>=3.11.0",
+  "prometheus-client>=0.26.0",
+  "pydantic>=2.8,<3",
+  "pyjwt>=2.14.0",
+  "pyyaml>=6.0",
+  "structlog>=26.1.0",
+  "typer>=0.12",
+  "uvicorn[standard]>=0.52.4",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8",
+  "ruff>=0.6",
+  "mypy>=1.11",
+  "types-PyYAML",
+  "pytest-asyncio>=1.4.0",
+]
+retrieval = [
+    "fastembed>=0.8.0",
+    "qdrant-client>=1.19.1",
+]
+# QLoRA SFT (scripts/train_qlora_sft.py). Not installed by default, CI, or the API image.
+#   uv sync --group train
+# Lightning historically `pip install`ed these ad-hoc; the lock is the pin. CUDA wheels
+# still come from the GPU host — do not `uv sync --group train` in CI.
+train = [
+  "accelerate>=1.0",
+  "bitsandbytes>=0.45",
+  "datasets>=3.0",
+  "peft>=0.14",
+  "torch>=2.4",
+  "transformers>=4.45",
+  "trl>=0.15",
+  "unsloth>=2025.1",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[project.scripts]
+alert2attack = "alert2attack.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/alert2attack"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+packages = ["alert2attack"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+# Optional `retrieval` group. When it is not installed (default install, and any
+# checkout that has not run `uv sync --group retrieval`) these imports are simply
+# unresolved, and that must not fail the type check.
+module = ["qdrant_client.*", "fastembed.*"]
+ignore_missing_imports = true

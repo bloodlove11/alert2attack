@@ -1,0 +1,37 @@
+scenario_id: otrf_psh_python_webserver
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_psh_python_webserver
+window:
+  start: '2020-10-29T04:16:09.914000Z'
+  end: '2020-10-29T04:16:09.994000Z'
+alert:
+  alert_id: alr-ebserver
+  host: WORKSTATION5
+  fired_at: '2020-10-29T04:16:09.914000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0001
+gold:
+  verdict: malicious
+  techniques:
+  - T1059.001
+  - T1105
+  root_pid: 11124
+  key_pids:
+  - 11124
+  - 11124
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF psh_python_webserver.zip (psh_python_webserver).
+provenance:
+  catalog_id: psh_python_webserver
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/execution/host/psh_python_webserver.zip
+  source_sha256: 58a62e35ee7a78e88cfca86e628e988a7192ec7fb24013b9d3b86766b25c8a17

@@ -1,0 +1,38 @@
+scenario_id: otrf_cmd_mshta_vbscript_execute_psh
+split: test
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_mshta_vbscript_execute_psh
+window:
+  start: '2020-10-22T06:57:59.619000Z'
+  end: '2020-10-22T06:58:00.162000Z'
+alert:
+  alert_id: alr-cute_psh
+  host: WORKSTATION5
+  fired_at: '2020-10-22T06:57:59.855000Z'
+  rule_id: win_susp_mshta
+  rule_title: Mshta Proxy Execution
+  severity: high
+  trigger_event_id: ev-0008
+gold:
+  verdict: malicious
+  techniques:
+  - T1218.005
+  - T1059.001
+  root_pid: 10980
+  key_pids:
+  - 10980
+  - 10980
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_mshta_vbscript_execute_psh.zip
+    (cmd_mshta_vbscript_execute_psh).
+provenance:
+  catalog_id: cmd_mshta_vbscript_execute_psh
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/cmd_mshta_vbscript_execute_psh.zip
+  source_sha256: f5f700bc986bbe73edcc209754b28a3e0ad38c56877f7fc5ed6fd04bc036d9f4

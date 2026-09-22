@@ -1,0 +1,38 @@
+scenario_id: otrf_cmd_dumping_ntds_dit_file_ntdsutil
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_dumping_ntds_dit_file_ntdsutil
+window:
+  start: '2023-07-19T16:02:23.835000Z'
+  end: '2023-07-19T16:02:24.179000Z'
+alert:
+  alert_id: alr-ntdsutil
+  host: DC01.pandalab.com
+  fired_at: '2023-07-19T16:02:23.992000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0018
+gold:
+  verdict: malicious
+  techniques:
+  - T1003.003
+  root_pid: 3824
+  key_pids:
+  - 3824
+  - 3824
+  - 4760
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_dumping_ntds_dit_file_ntdsutil.zip
+    (cmd_dumping_ntds_dit_file_ntdsutil).
+provenance:
+  catalog_id: cmd_dumping_ntds_dit_file_ntdsutil
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/credential_access/host/cmd_dumping_ntds_dit_file_ntdsutil.zip
+  source_sha256: 4633882ab1e9eadd156b29a89a5a6e24b680ead1b11ee259fdbe0d19ddbf77cf

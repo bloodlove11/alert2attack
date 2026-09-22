@@ -1,0 +1,37 @@
+scenario_id: otrf_cmd_dumping_ntds_dit_file_volume_shadow_copy_benign_lsass
+split: test
+origin: otrf
+description: 'OTRF background window: vboxservice.exe accessed LSASS (common false
+  positive for credential-dumping rules).'
+window:
+  start: '2023-07-19T19:20:10.180000Z'
+  end: '2023-07-19T19:20:48.847000Z'
+alert:
+  alert_id: alr-gn_lsass
+  host: DC01.pandalab.com
+  fired_at: '2023-07-19T19:20:10.180000Z'
+  rule_id: win_susp_lsass_access
+  rule_title: LSASS Memory Access
+  severity: high
+  trigger_event_id: ev-0001
+gold:
+  verdict: likely_benign
+  techniques: []
+  root_pid: 1244
+  key_pids:
+  - 1244
+  persistence_evidence: []
+  acceptable_actions:
+  - close_as_benign
+  - monitor
+  unacceptable_actions:
+  - isolate_host
+  - kill_process
+  narrative: 'GOLD-MARKER-OTRF-BENIGN. Real OTRF telemetry slice from cmd_dumping_ntds_dit_file_volume_shadow_copy:
+    vboxservice.exe (pid 1244) accessed lsass.exe with GrantedAccess=0x1400. No attacker
+    LOLBIN or dump tool is present in this boxed window; this is a known false-positive
+    class for LSASS-access detections.'
+provenance:
+  catalog_id: cmd_dumping_ntds_dit_file_volume_shadow_copy
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/credential_access/host/cmd_dumping_ntds_dit_file_volume_shadow_copy.zip
+  source_sha256: aed847c1571ec3ef906f2b844d343bb3897eec4cf856b8f0939e934646348378

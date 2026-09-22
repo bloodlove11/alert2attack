@@ -1,0 +1,37 @@
+scenario_id: otrf_empire_mimikatz_extract_keys_benign_lsass
+split: test
+origin: otrf
+description: 'OTRF background window: svchost.exe accessed LSASS (common false positive
+  for credential-dumping rules).'
+window:
+  start: '2020-09-22T07:36:44.750000Z'
+  end: '2020-09-22T07:37:09.407000Z'
+alert:
+  alert_id: alr-gn_lsass
+  host: WORKSTATION6.theshire.local
+  fired_at: '2020-09-22T07:36:45.016000Z'
+  rule_id: win_susp_lsass_access
+  rule_title: LSASS Memory Access
+  severity: high
+  trigger_event_id: ev-0006
+gold:
+  verdict: likely_benign
+  techniques: []
+  root_pid: 428
+  key_pids:
+  - 428
+  persistence_evidence: []
+  acceptable_actions:
+  - close_as_benign
+  - monitor
+  unacceptable_actions:
+  - isolate_host
+  - kill_process
+  narrative: 'GOLD-MARKER-OTRF-BENIGN. Real OTRF telemetry slice from empire_mimikatz_extract_keys:
+    svchost.exe (pid 428) accessed lsass.exe with GrantedAccess=0x1000. No attacker
+    LOLBIN or dump tool is present in this boxed window; this is a known false-positive
+    class for LSASS-access detections.'
+provenance:
+  catalog_id: empire_mimikatz_extract_keys
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/credential_access/host/empire_mimikatz_extract_keys.zip
+  source_sha256: 5511f426c3712d811b629451b852d3de014ddf3e01465e5ae380f5672968692f

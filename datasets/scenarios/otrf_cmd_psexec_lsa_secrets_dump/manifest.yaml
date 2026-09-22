@@ -1,0 +1,37 @@
+scenario_id: otrf_cmd_psexec_lsa_secrets_dump
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_psexec_lsa_secrets_dump
+window:
+  start: '2020-10-19T07:30:46.245000Z'
+  end: '2020-10-19T07:30:46.322000Z'
+alert:
+  alert_id: alr-ets_dump
+  host: WORKSTATION5
+  fired_at: '2020-10-19T07:30:46.251000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0007
+gold:
+  verdict: malicious
+  techniques:
+  - T1003.001
+  - T1021.002
+  root_pid: 7256
+  key_pids:
+  - 7256
+  - 7256
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_psexec_lsa_secrets_dump.zip (cmd_psexec_lsa_secrets_dump).
+provenance:
+  catalog_id: cmd_psexec_lsa_secrets_dump
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/credential_access/host/cmd_psexec_lsa_secrets_dump.zip
+  source_sha256: c52e6145fefe37373a5274e2976ccf6d62e4d33e13c55dc1a2ce17f00506d1a6

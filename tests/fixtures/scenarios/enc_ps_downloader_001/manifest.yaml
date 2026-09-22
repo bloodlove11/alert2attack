@@ -1,0 +1,49 @@
+scenario_id: enc_ps_downloader_001
+split: test
+origin: authored
+description: 'Phishing document opened from Outlook spawns WINWORD, which launches
+  hidden encoded PowerShell that downloads a stager, drops a binary under AppData,
+  sets a Run key and starts the dropped binary which beacons out over 443.
+
+  '
+window:
+  start: '2024-03-12T09:55:00Z'
+  end: '2024-03-12T10:25:00Z'
+alert:
+  alert_id: alr-0001
+  host: WS-FIN-07
+  fired_at: '2024-03-12T10:02:14Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0004
+gold:
+  verdict: malicious
+  techniques:
+  - T1566.001
+  - T1204.002
+  - T1059.001
+  - T1105
+  - T1547.001
+  root_pid: 4120
+  key_pids:
+  - 4120
+  - 5288
+  - 5304
+  persistence_evidence:
+  - ev-0007
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - block_hash
+  unacceptable_actions:
+  - close_as_benign
+  narrative: 'GOLD-MARKER-DOWNLOADER. jdoe opened Invoice_Q1_2024.docm from an Outlook
+    attachment cache (WINWORD pid 4120). Word spawned hidden encoded PowerShell (pid
+    5288) that downloaded http://185.220.101.4/a.ps1, wrote update.exe under AppData\Roaming,
+    created the HKCU Run key "MicrosoftUpdater" for persistence and executed update.exe
+    (pid 5304), which resolved cdn-status-update.com and connected to 185.220.101.4:443.
+    The host is compromised; no evidence of lateral movement in the window.
+
+    '

@@ -1,0 +1,37 @@
+scenario_id: otrf_empire_persistence_registry_modification_run_keys_standard_user_benign_lsass
+split: dev
+origin: otrf
+description: 'OTRF background window: svchost.exe accessed LSASS (common false positive
+  for credential-dumping rules).'
+window:
+  start: '2020-09-04T07:07:18.170000Z'
+  end: '2020-09-04T07:07:57.431000Z'
+alert:
+  alert_id: alr-gn_lsass
+  host: WORKSTATION5.theshire.local
+  fired_at: '2020-09-04T07:07:18.170000Z'
+  rule_id: win_susp_lsass_access
+  rule_title: LSASS Memory Access
+  severity: high
+  trigger_event_id: ev-0001
+gold:
+  verdict: likely_benign
+  techniques: []
+  root_pid: 68
+  key_pids:
+  - 68
+  persistence_evidence: []
+  acceptable_actions:
+  - close_as_benign
+  - monitor
+  unacceptable_actions:
+  - isolate_host
+  - kill_process
+  narrative: 'GOLD-MARKER-OTRF-BENIGN. Real OTRF telemetry slice from empire_persistence_registry_modification_run_keys_standard_user:
+    svchost.exe (pid 68) accessed lsass.exe with GrantedAccess=0x1000. No attacker
+    LOLBIN or dump tool is present in this boxed window; this is a known false-positive
+    class for LSASS-access detections.'
+provenance:
+  catalog_id: empire_persistence_registry_modification_run_keys_standard_user
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/persistence/host/empire_persistence_registry_modification_run_keys_standard_user.zip
+  source_sha256: 2965f791bcaf5e6ccfc4059985e81fd7e67ec87f17855b6c383edd1b03a19c36

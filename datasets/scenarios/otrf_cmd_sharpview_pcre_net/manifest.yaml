@@ -1,0 +1,37 @@
+scenario_id: otrf_cmd_sharpview_pcre_net
+split: test
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_sharpview_pcre_net
+window:
+  start: '2020-10-30T00:23:20.057000Z'
+  end: '2020-10-30T00:23:21.419000Z'
+alert:
+  alert_id: alr-pcre_net
+  host: WORKSTATION5.theshire.local
+  fired_at: '2020-10-30T00:23:20.533000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0013
+gold:
+  verdict: malicious
+  techniques:
+  - T1059.003
+  - T1047
+  root_pid: 3752
+  key_pids:
+  - 3752
+  - 3752
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_sharpview_pcre_net.zip (cmd_sharpview_pcre_net).
+provenance:
+  catalog_id: cmd_sharpview_pcre_net
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/execution/host/cmd_sharpview_pcre_net.zip
+  source_sha256: 314b1d08b9038dd327c8769c82564a44fd26fa1ba17ffa79e52b4683e2821dac

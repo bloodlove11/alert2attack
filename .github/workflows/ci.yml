@@ -1,0 +1,83 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        # The retrieval group is installed here so its tests run rather than skip.
+        # It adds qdrant-client and fastembed; no model is downloaded, because the
+        # tests use the hash embedder and Qdrant's in-memory mode.
+        run: uv sync --frozen --group retrieval
+      - name: Train group is locked (not installed)
+        run: uv tree --group train --frozen --depth 1
+      - name: Ruff
+        run: uv run ruff check .
+      - name: Mypy
+        run: uv run mypy
+      - name: Pytest
+        run: uv run pytest
+        env:
+          # No live LLM in CI
+          ALERT2ATTACK_LIVE: "0"
+
+  web:
+    # Separate job, not a step in `test`: the console is Node tooling in a
+    # Python repo and should fail on its own terms without blocking the suite.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install
+        run: npm ci
+        working-directory: web
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: web
+      - name: Build
+        run: npm run build
+        working-directory: web
+
+  web-types-are-current:
+    # schema.d.ts is generated from the API's OpenAPI document and committed.
+    # If a response model changes and nobody regenerates, the committed types
+    # silently drift from the contract. This catches that.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: uv sync --frozen
+      - run: npm ci
+        working-directory: web
+      - name: Regenerate types from the live schema
+        run: |
+          uv run python -m alert2attack.api.openapi openapi.json
+          npm --prefix web run gen:types
+      - name: Committed types match the API
+        run: git diff --exit-code -- web/src/lib/schema.d.ts

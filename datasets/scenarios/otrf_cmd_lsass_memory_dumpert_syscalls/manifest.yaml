@@ -1,0 +1,37 @@
+scenario_id: otrf_cmd_lsass_memory_dumpert_syscalls
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_lsass_memory_dumpert_syscalls
+window:
+  start: '2020-10-19T02:56:11.110000Z'
+  end: '2020-10-19T02:56:14.642000Z'
+alert:
+  alert_id: alr-syscalls
+  host: WORKSTATION5
+  fired_at: '2020-10-19T02:56:14.283000Z'
+  rule_id: win_susp_lsass_access
+  rule_title: LSASS Memory Access
+  severity: high
+  trigger_event_id: ev-0029
+gold:
+  verdict: malicious
+  techniques:
+  - T1003.001
+  root_pid: 6772
+  key_pids:
+  - 6772
+  - 6772
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_lsass_memory_dumpert_syscalls.zip
+    (cmd_lsass_memory_dumpert_syscalls).
+provenance:
+  catalog_id: cmd_lsass_memory_dumpert_syscalls
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/credential_access/host/cmd_lsass_memory_dumpert_syscalls.zip
+  source_sha256: a28dbf708685a80edfb0b3d2a00c9bf196dd394fc1d61a933878841f4872a7ed

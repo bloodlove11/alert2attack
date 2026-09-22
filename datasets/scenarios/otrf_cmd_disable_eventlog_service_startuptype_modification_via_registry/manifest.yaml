@@ -1,0 +1,38 @@
+scenario_id: otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry
+split: dev
+origin: otrf
+description: OTRF-derived boxed case for otrf_cmd_disable_eventlog_service_startuptype_modification_via_registry
+window:
+  start: '2022-08-04T15:20:10.480000Z'
+  end: '2022-08-04T15:20:10.924000Z'
+alert:
+  alert_id: alr-registry
+  host: Pedro01
+  fired_at: '2022-08-04T15:20:10.522000Z'
+  rule_id: win_powershell_encoded_command
+  rule_title: Suspicious Encoded PowerShell Command Line
+  severity: high
+  trigger_event_id: ev-0004
+gold:
+  verdict: malicious
+  techniques:
+  - T1562.002
+  - T1112
+  root_pid: 4392
+  key_pids:
+  - 4392
+  - 4392
+  persistence_evidence: []
+  acceptable_actions:
+  - isolate_host
+  - kill_process
+  - collect_script
+  - escalate
+  unacceptable_actions:
+  - close_as_benign
+  narrative: GOLD-MARKER-OTRF. Derived from OTRF cmd_disable_eventlog_service_startuptype_modification_via_registry.zip
+    (cmd_disable_eventlog_service_startuptype_modification_via_registry).
+provenance:
+  catalog_id: cmd_disable_eventlog_service_startuptype_modification_via_registry
+  source_url: https://raw.githubusercontent.com/OTRF/Security-Datasets/master/datasets/atomic/windows/defense_evasion/host/cmd_disable_eventlog_service_startuptype_modification_via_registry.zip
+  source_sha256: 4312946d5bb0883e691da3b1130d4179b951a413278b450a75c05d56a2858a1a
