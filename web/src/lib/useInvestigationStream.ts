@@ -64,7 +64,7 @@ export function useInvestigationStream(jobId: string | null, onDone?: () => void
     }
 
     setState({ ...EMPTY, status: "connecting" });
-    const source = new EventSource(`${API_BASE}/investigations/${jobId}/events`);
+    const source = new EventSource(`${API_BASE}/investigations/${encodeURIComponent(jobId)}/events`);
 
     function patch(fn: (prev: TraceState) => TraceState) {
       setState((prev) => ({ ...fn(prev), status: "streaming" }));

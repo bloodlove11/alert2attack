@@ -16,7 +16,7 @@ from alert2attack.domain.evidence import is_evidence_id
 from alert2attack.knowledge.base import KnowledgeBase
 from alert2attack.store.case_store import CaseStore
 from alert2attack.tools.context import EvidenceLedger
-from alert2attack.verify.models import VerificationError, VerificationReport
+from alert2attack.verify.models import VerificationError, VerificationReport, VerificationStatus
 from alert2attack.verify.verify import verify
 
 
@@ -134,14 +134,14 @@ def degrade_casefile(
     )
     report = verify(cleaned, ledger, store, case_id, knowledge)
     if report.passed and stripped == 0 and repairs_used == 0:
-        status: str = "passed"
+        status: VerificationStatus = "passed"
     elif report.passed and repairs_used > 0 and stripped == 0:
         status = "repaired"
     else:
         status = "degraded"
     return cleaned, VerificationReport(
         passed=report.passed,
-        status=status,  # type: ignore[arg-type]
+        status=status,
         errors=report.errors,
         pre_repair_errors=list(prior_errors or []),
         repairs_used=repairs_used,

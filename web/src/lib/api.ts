@@ -1,26 +1,28 @@
 /**
  * Typed client for the alert2attack API.
  *
- * The row types below mirror the Pydantic response models. They are a stopgap:
- * `npm run gen:types` regenerates `schema.d.ts` from the API's own OpenAPI
- * document, and these should be replaced by references into it rather than
- * maintained as a second, drifting copy of the contract.
+ * Every type the API owns is aliased out of `schema.d.ts`, which
+ * `npm run gen:types` regenerates from the API's own OpenAPI document and CI
+ * checks for drift. Retyping them here by hand would be a second copy of the
+ * contract with nothing holding it to the first.
  */
 
 import type { components } from "./schema";
 
-/** Generated from the API's OpenAPI document, not hand-written. */
-export type SearchResponse = components["schemas"]["SearchResponse"];
-export type SearchHit = components["schemas"]["Hit"];
-export type SearchMode = "lexical" | "dense" | "hybrid";
+type Schemas = components["schemas"];
+
+export type SearchResponse = Schemas["SearchResponse"];
+export type SearchHit = Schemas["Hit"];
+export type SearchMode = SearchResponse["mode"];
 
 export const API_BASE = import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000";
 
-export type Severity = "low" | "medium" | "high" | "critical";
-export type Split = "dev" | "test";
-export type Verdict = "malicious" | "suspicious" | "likely_benign" | "not_enough_evidence";
-export type JobStatus = "queued" | "running" | "succeeded" | "failed";
-export type AgentModel = "ollama" | "local-7b" | "openai" | "teacher" | "replay";
+export type Severity = Schemas["Severity"];
+export type Split = Schemas["ScenarioSummary"]["split"];
+export type Verdict = NonNullable<Schemas["Review"]["corrected_verdict"]>;
+export type JobStatus = Schemas["InvestigationJobResponse"]["status"];
+// `scripted` is a test-only model and the console never offers it.
+export type AgentModel = Exclude<Schemas["CreateInvestigationRequest"]["model"], "scripted">;
 
 /** Progress event types, mirroring alert2attack.agent.progress. */
 export type ProgressType =
@@ -111,52 +113,13 @@ export interface StreamErrorEvent {
   message: string;
 }
 
-export interface ScenarioSummary {
-  scenario_id: string;
-  split: Split;
-  origin: "otrf" | "authored";
-  description: string;
-  alert_id: string;
-  host: string;
-  rule_id: string;
-  rule_title: string;
-  severity: Severity;
-  fired_at: string;
-}
-
-export interface ScenarioDetail extends ScenarioSummary {
-  window_start: string;
-  window_end: string;
-  trigger_event_id: string;
-  event_count: number;
-}
-
-export interface TelemetryEvent {
-  event_id: string;
-  kind: string;
-  ts: string;
-  host: string;
-  user?: string | null;
-  pid?: number | null;
-  ppid?: number | null;
-  image?: string | null;
-  command_line?: string | null;
-  parent_image?: string | null;
-  target_image?: string | null;
-  target_path?: string | null;
-  details?: string | null;
-  dest_ip?: string | null;
-  dest_port?: number | null;
-  dest_host?: string | null;
-  query?: string | null;
-  [key: string]: unknown;
-}
-
-export interface EventPage {
-  events: TelemetryEvent[];
-  next_cursor: string | null;
-  limit: number;
-}
+export type ScenarioSummary = Schemas["ScenarioSummary"];
+export type ScenarioDetail = Schemas["ScenarioDetail"];
+export type TelemetryEvent = Schemas["Event"];
+export type EventPage = Schemas["EventPage"];
+export type EvidenceResolution = Schemas["EvidenceResolution"];
+export type Review = Schemas["Review"];
+export type ReviewRequest = Schemas["ReviewRequest"];
 
 export interface Claim {
   text: string;
@@ -187,14 +150,13 @@ export interface Verification {
   stripped_claims: number;
 }
 
-export interface InvestigationJob {
-  id: string;
-  status: JobStatus;
-  scenario_id: string;
-  model: string;
-  created_at: string;
-  updated_at: string;
-  error: string | null;
+/**
+ * The job row, with `result` narrowed.
+ *
+ * The API types `result` as a free-form object, so the OpenAPI document cannot
+ * describe what is inside it. Everything else comes from the generated schema.
+ */
+export interface InvestigationJob extends Omit<Schemas["InvestigationJobResponse"], "result"> {
   result: {
     case_file: CaseFile;
     verification: Verification | null;
@@ -213,45 +175,7 @@ export interface InvestigationJob {
   } | null;
 }
 
-export interface EvidenceResolution {
-  evidence_id: string;
-  kind: "event" | "sigma_rule" | "attack_technique";
-  first_seen_tool_seq: number | null;
-  event: TelemetryEvent | null;
-  rule: {
-    slug: string;
-    title: string;
-    description: string;
-    level: string;
-    tags: string[];
-    falsepositives: string[];
-  } | null;
-  technique: {
-    technique_id: string;
-    name: string;
-    tactics: string[];
-    description: string;
-  } | null;
-}
-
-export interface Review {
-  id: string;
-  job_id: string;
-  scenario_id: string;
-  agent_verdict: string;
-  agrees: boolean;
-  corrected_verdict: Verdict | null;
-  note: string;
-  reviewer: string;
-  created_at: string;
-}
-
-export interface ReviewRequest {
-  agrees: boolean;
-  corrected_verdict?: Verdict | null;
-  note?: string;
-}
-
+/** `/me` returns a free-form object, so this one stays hand-written too. */
 export interface AuthState {
   authenticated: boolean;
   auth_enabled: boolean;
@@ -290,21 +214,23 @@ function authHeaders(): Record<string, string> {
   return bearerToken ? { Authorization: `Bearer ${bearerToken}` } : {};
 }
 
+async function failure(resp: Response): Promise<ApiError> {
+  // FastAPI puts the message in `detail`; fall back to the status text.
+  let detail = resp.statusText;
+  try {
+    const body = (await resp.json()) as { detail?: unknown };
+    if (typeof body.detail === "string") detail = body.detail;
+  } catch {
+    // non-JSON error body; statusText is the best we have
+  }
+  return new ApiError(resp.status, detail);
+}
+
 async function get<T>(path: string): Promise<T> {
   const resp = await fetch(`${API_BASE}${path}`, {
     headers: { Accept: "application/json", ...authHeaders() },
   });
-  if (!resp.ok) {
-    // FastAPI puts the message in `detail`; fall back to the status text.
-    let detail = resp.statusText;
-    try {
-      const body = (await resp.json()) as { detail?: unknown };
-      if (typeof body.detail === "string") detail = body.detail;
-    } catch {
-      // non-JSON error body; statusText is the best we have
-    }
-    throw new ApiError(resp.status, detail);
-  }
+  if (!resp.ok) throw await failure(resp);
   return (await resp.json()) as T;
 }
 
@@ -318,16 +244,7 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     },
     body: JSON.stringify(body),
   });
-  if (!resp.ok) {
-    let detail = resp.statusText;
-    try {
-      const parsed = (await resp.json()) as { detail?: unknown };
-      if (typeof parsed.detail === "string") detail = parsed.detail;
-    } catch {
-      // non-JSON error body
-    }
-    throw new ApiError(resp.status, detail);
-  }
+  if (!resp.ok) throw await failure(resp);
   return (await resp.json()) as T;
 }
 
@@ -349,7 +266,7 @@ export const api = {
     return get<ScenarioSummary[]>(`/scenarios${query ? `?${query}` : ""}`);
   },
 
-  scenario: (id: string) => get<ScenarioDetail>(`/scenarios/${id}`),
+  scenario: (id: string) => get<ScenarioDetail>(`/scenarios/${encodeURIComponent(id)}`),
 
   events: (id: string, opts: { cursor?: string | null; pid?: number; q?: string; limit?: number }) => {
     const params = new URLSearchParams();
@@ -357,7 +274,7 @@ export const api = {
     if (opts.cursor) params.set("cursor", opts.cursor);
     if (opts.pid !== undefined) params.set("pid", String(opts.pid));
     if (opts.q) params.set("q", opts.q);
-    return get<EventPage>(`/scenarios/${id}/events?${params.toString()}`);
+    return get<EventPage>(`/scenarios/${encodeURIComponent(id)}/events?${params.toString()}`);
   },
 
   investigations: (limit = 50) => get<InvestigationJob[]>(`/investigations?limit=${limit}`),
@@ -373,10 +290,12 @@ export const api = {
       sync: false,
     }),
 
-  investigation: (jobId: string) => get<InvestigationJob>(`/investigations/${jobId}`),
+  investigation: (jobId: string) => get<InvestigationJob>(`/investigations/${encodeURIComponent(jobId)}`),
 
   evidence: (jobId: string, evidenceId: string) =>
-    get<EvidenceResolution>(`/investigations/${jobId}/evidence/${evidenceId}`),
+    get<EvidenceResolution>(
+      `/investigations/${encodeURIComponent(jobId)}/evidence/${encodeURIComponent(evidenceId)}`,
+    ),
 
   searchTechniques: (q: string, mode?: SearchMode, k = 10) => {
     const params = new URLSearchParams({ q, k: String(k) });
@@ -390,8 +309,10 @@ export const api = {
     post<{ access_token: string; expires_in: number }>("/auth/token", { username, password }),
 
   reviews: (scenarioId?: string) =>
-    get<Review[]>(`/reviews${scenarioId ? `?scenario_id=${scenarioId}` : ""}`),
+    get<Review[]>(
+      `/reviews${scenarioId ? `?${new URLSearchParams({ scenario_id: scenarioId }).toString()}` : ""}`,
+    ),
 
   addReview: (jobId: string, body: ReviewRequest) =>
-    post<Review>(`/investigations/${jobId}/review`, body),
+    post<Review>(`/investigations/${encodeURIComponent(jobId)}/review`, body),
 };

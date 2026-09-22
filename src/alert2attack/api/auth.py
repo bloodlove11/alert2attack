@@ -1,6 +1,6 @@
 """Single-operator authentication for the console.
 
-**This is demo-grade and the README says so.** It authenticates one configured
+This is demo-grade and the README says so. It authenticates one configured
 operator against one password hash. There is no user table, no registration, no
 password reset and no roles, because shipping a hand-rolled version of those
 would be worse than shipping none. A real deployment puts the console behind
@@ -162,7 +162,9 @@ def decode_token(config: AuthConfig, token: str) -> Operator:
 def authenticate(config: AuthConfig, request: LoginRequest) -> TokenResponse:
     """One operator. Both checks run even when the username is wrong, so a
     failed login costs the same either way."""
-    user_ok = hmac.compare_digest(request.username, config.username)
+    # Compared as UTF-8 bytes: compare_digest raises TypeError on a non-ASCII
+    # str, which would turn a junk username into a 500 instead of a 401.
+    user_ok = hmac.compare_digest(request.username.encode("utf-8"), config.username.encode("utf-8"))
     password_ok = verify_password(request.password, config.password_hash)
     if not (user_ok and password_ok):
         raise HTTPException(

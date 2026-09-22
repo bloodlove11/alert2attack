@@ -103,13 +103,13 @@ export function EvidenceDrawer({
             <dl>
               <Field label="Slug" value={data.rule.slug} />
               <Field label="Level" value={data.rule.level} />
-              <Field label="Tags" value={data.rule.tags.join(", ")} />
+              <Field label="Tags" value={(data.rule.tags ?? []).join(", ")} />
             </dl>
-            {data.rule.falsepositives.length > 0 ? (
+            {(data.rule.falsepositives ?? []).length > 0 ? (
               <div>
                 <h4 className="text-xs uppercase tracking-wide text-dim">Known false positives</h4>
                 <ul className="mt-1 list-inside list-disc text-xs text-dim">
-                  {data.rule.falsepositives.map((fp) => (
+                  {(data.rule.falsepositives ?? []).map((fp) => (
                     <li key={fp}>{fp}</li>
                   ))}
                 </ul>

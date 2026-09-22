@@ -6,6 +6,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+VerificationStatus = Literal["passed", "repaired", "degraded"]
+
 
 class VerificationError(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -19,7 +21,7 @@ class VerificationReport(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     passed: bool
-    status: Literal["passed", "repaired", "degraded"] = "passed"
+    status: VerificationStatus = "passed"
     errors: list[VerificationError] = Field(default_factory=list)
     pre_repair_errors: list[VerificationError] = Field(default_factory=list)
     repairs_used: int = 0

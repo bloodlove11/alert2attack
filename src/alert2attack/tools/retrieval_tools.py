@@ -1,12 +1,12 @@
 """An optional agent tool over the retrieval stack.
 
-**Off by default.** ``default_registry()`` does not include it, and a test pins the
+Off by default. ``default_registry()`` does not include it, and a test pins the
 default tool list, because a new tool changes what the model is shown and the
 frozen OTRF numbers were measured without it. Nothing has measured whether this
 tool makes an investigation better. There is no model available to run that
 experiment, and `docs/RETRIEVAL_EVAL.md` reports retrieval quality only.
 
-**A hit is not evidence.** The tool returns candidate technique ids and gives the
+A hit is not evidence. The tool returns candidate technique ids and gives the
 ledger nothing: no evidence ids. To cite a technique the agent still has to call
 ``lookup_attack_technique``, which is what puts ``attack-T####`` in the ledger.
 Otherwise a search result would count as "fetched", and

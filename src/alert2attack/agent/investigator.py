@@ -8,7 +8,7 @@ from typing import Any
 
 from alert2attack.agent.budget import Budget
 from alert2attack.agent.graph import InvestigationGraph, run_graph
-from alert2attack.agent.llm import ChatModel, OllamaChat, ScriptedChat
+from alert2attack.agent.llm import ChatModel, ScriptedChat, ollama_from_env
 from alert2attack.agent.progress import ProgressEmitter, ProgressSink
 from alert2attack.agent.trace import Trace
 from alert2attack.domain.casefile import CaseFile
@@ -108,10 +108,7 @@ def build_chat_model(kind: str, **kwargs: Any) -> ChatModel:
             raise ValueError("ScriptedChat requires responses=[...]")
         return ScriptedChat(responses)
     if key in {"ollama", "local", "local-7b"}:
-        return OllamaChat(
-            model=kwargs.get("model", "qwen2.5:7b-instruct"),
-            base_url=kwargs.get("base_url", "http://127.0.0.1:11434/v1"),
-        )
+        return ollama_from_env(model=kwargs.get("model"), base_url=kwargs.get("base_url"))
     if key in {"openai", "teacher"}:
         from alert2attack.agent.teacher import teacher_chat
 

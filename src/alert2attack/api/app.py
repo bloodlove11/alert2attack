@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import os
-from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
 from typing import Annotated, Any, Literal
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Query, Request
@@ -152,28 +150,20 @@ def create_app(
     hub = ProgressHub()
     auth = auth_config or auth_config_from_env()
     resolve_chat = chat_factory or default_chat_factory
-    retriever_holder: dict[str, Retriever | None] = {"r": retriever}
-
     def get_retriever() -> Retriever:
         # Built on first use, not at startup: a dense retriever embeds the whole
         # corpus, and an API that never gets a search should not pay for it.
-        if retriever_holder["r"] is None:
+        nonlocal retriever
+        if retriever is None:
             from alert2attack.retrieval.factory import shared_retriever
 
-            retriever_holder["r"] = shared_retriever()
-        found = retriever_holder["r"]
-        assert found is not None
-        return found
-
-    @asynccontextmanager
-    async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
-        yield
+            retriever = shared_retriever()
+        return retriever
 
     app = FastAPI(
         title="alert2attack",
         description="Local-first EDR investigation agent API",
         version="0.1.0",
-        lifespan=lifespan,
     )
     app.state.job_store = store
     app.state.progress_hub = hub
@@ -343,7 +333,15 @@ def create_app(
                 detail="EXPLABS_API_KEY or OPENAI_API_KEY required for openai/teacher model",
             )
 
-    @app.post("/investigations", response_model=InvestigationJobResponse, dependencies=[Depends(require_operator)])
+    @app.post(
+        "/investigations",
+        response_model=InvestigationJobResponse,
+        # The async path answers 202, so it has to be declared: the console's
+        # types are generated from this document, and a raw JSONResponse never
+        # reaches response_model.
+        responses={202: {"model": InvestigationJobResponse, "description": "Queued; poll or stream for the result"}},
+        dependencies=[Depends(require_operator)],
+    )
     def create_investigation(
         body: CreateInvestigationRequest,
         background_tasks: BackgroundTasks,

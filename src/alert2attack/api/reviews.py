@@ -6,10 +6,10 @@ case. This is the smallest thing that closes that loop.
 
 Two deliberate constraints:
 
-- **Append-only.** A corrected verdict is an *observation about* a case file,
+- Append-only. A corrected verdict is an *observation about* a case file,
   never a mutation of one. A case file is the record of what the agent said on
   that run; editing it in place would destroy the only honest artifact here.
-- **Export, never direct write.** ``/reviews/export`` emits candidate eval
+- Export, never a direct write. ``/reviews/export`` emits candidate eval
   cases for a human to curate. Writing them straight into the dev split would
   let the agent's own output quietly become its answer key, which is the same
   contamination the whole eval protocol exists to prevent.

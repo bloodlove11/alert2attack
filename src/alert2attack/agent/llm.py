@@ -13,6 +13,9 @@ from openai import OpenAI
 
 Role = Literal["system", "user", "assistant", "tool"]
 
+DEFAULT_OLLAMA_MODEL = "qwen2.5:7b-instruct"
+DEFAULT_OLLAMA_BASE_URL = "http://127.0.0.1:11434/v1"
+
 
 @dataclass(frozen=True)
 class ToolCallRequest:
@@ -189,10 +192,23 @@ class OpenAICompatibleChat:
 
 def OllamaChat(
     *,
-    model: str = "qwen2.5:7b-instruct",
-    base_url: str = "http://127.0.0.1:11434/v1",
+    model: str = DEFAULT_OLLAMA_MODEL,
+    base_url: str = DEFAULT_OLLAMA_BASE_URL,
 ) -> OpenAICompatibleChat:
     return OpenAICompatibleChat(model=model, base_url=base_url, api_key="ollama")
+
+
+def ollama_from_env(*, model: str | None = None, base_url: str | None = None) -> OpenAICompatibleChat:
+    """Ollama chat from the environment, with explicit arguments winning.
+
+    The single reader of both variables. The CLI used to honour only the model
+    tag, so pointing ``ALERT2ATTACK_OLLAMA_BASE_URL`` at a remote host silently
+    ran against localhost instead.
+    """
+    return OllamaChat(
+        model=model or os.environ.get("ALERT2ATTACK_OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL),
+        base_url=base_url or os.environ.get("ALERT2ATTACK_OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL),
+    )
 
 
 def OpenAIChat(
@@ -201,10 +217,9 @@ def OpenAIChat(
     api_key: str | None = None,
     base_url: str | None = None,
 ) -> OpenAICompatibleChat:
-    kwargs: dict[str, Any] = {"model": model, "api_key": api_key or "EMPTY"}
-    if base_url:
-        kwargs["base_url"] = base_url
-    # OpenAICompatibleChat requires base_url; default OpenAI cloud when omitted.
-    if base_url is None:
-        return OpenAICompatibleChat(model=model, base_url="https://api.openai.com/v1", api_key=api_key or "EMPTY")
-    return OpenAICompatibleChat(model=model, base_url=base_url, api_key=api_key or "EMPTY")
+    # OpenAICompatibleChat requires base_url; default to OpenAI cloud when omitted.
+    return OpenAICompatibleChat(
+        model=model,
+        base_url=base_url or "https://api.openai.com/v1",
+        api_key=api_key or "EMPTY",
+    )

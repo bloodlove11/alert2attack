@@ -11,7 +11,7 @@ from typing import Any, Literal
 
 from alert2attack.agent.budget import budget_from_env, max_investigate_turns_from_env
 from alert2attack.agent.investigator import Investigator
-from alert2attack.agent.llm import ChatMessage, ChatModel, ChatResponse, OllamaChat, ScriptedChat
+from alert2attack.agent.llm import ChatMessage, ChatModel, ChatResponse, ScriptedChat, ollama_from_env
 from alert2attack.domain.scenario import SCENARIOS_ROOT, Scenario, iter_scenario_dirs, load_scenario, peek_split
 from alert2attack.eval.b0 import run_b0
 from alert2attack.eval.distill import append_distill_jsonl, distill_record, scripted_prompt_messages
@@ -80,11 +80,7 @@ def _ollama_llm() -> ChatModel:
     Defaults to localhost. ``ALERT2ATTACK_OLLAMA_BASE_URL`` points at a remote Ollama
     (Lightning Studio GPU, a laptop worker) without changing the arm name or the model tag.
     """
-    kwargs: dict[str, object] = {"model": os.environ.get("ALERT2ATTACK_OLLAMA_MODEL", "qwen2.5:7b-instruct")}
-    base = os.environ.get("ALERT2ATTACK_OLLAMA_BASE_URL")
-    if base:
-        kwargs["base_url"] = base
-    return OllamaChat(**kwargs)  # type: ignore[arg-type]
+    return ollama_from_env()
 
 
 def build_arm_llm(arm: ArmName, *, scripted_responses: list[ChatResponse] | None = None) -> ChatModel:

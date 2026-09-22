@@ -10,7 +10,7 @@ Local mode is the default because most readers will never start a database to tr
 a search box. It is the same client API, so nothing above this file changes when
 a real server is pointed at.
 
-**On the choice of Qdrant.** For ~700 documents a dedicated vector database is
+On the choice of Qdrant: for ~700 documents a dedicated vector database is
 overkill: sqlite-vec would give the same answers with no new service and the same
 file as everything else. Qdrant is here to work hands-on with a dedicated vector
 store and its embedded mode, which is a preference and not a technical need.

@@ -962,6 +962,15 @@ export interface operations {
                     "application/json": components["schemas"]["InvestigationJobResponse"];
                 };
             };
+            /** @description Queued; poll or stream for the result */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvestigationJobResponse"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {

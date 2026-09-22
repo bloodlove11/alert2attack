@@ -122,7 +122,7 @@ def main(argv: list[str] | None = None) -> int:
                 continue
             try:
                 text = _format_chat(tokenizer, messages)
-            except Exception:
+            except Exception:  # noqa: BLE001 - a row the tokenizer template rejects is skipped, not fatal
                 continue
             if text.strip():
                 out.append({"text": text})

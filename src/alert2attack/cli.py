@@ -121,11 +121,10 @@ def investigate(
     ] = 0,
 ) -> None:
     """Run the LangGraph investigator and print CaseFile + trace summary."""
-    import os
 
     from alert2attack.agent.budget import Budget
     from alert2attack.agent.investigator import Investigator
-    from alert2attack.agent.llm import OllamaChat, ScriptedChat, scripted_responses_from_json
+    from alert2attack.agent.llm import ScriptedChat, ollama_from_env, scripted_responses_from_json
 
     scenario = _find(root, scenario_id)
     if responses_json is not None or model == "scripted":
@@ -134,7 +133,7 @@ def investigate(
             raise typer.Exit(code=2)
         llm: Any = ScriptedChat(scripted_responses_from_json(responses_json))
     elif model in {"ollama", "local", "local-7b"}:
-        llm = OllamaChat(model=os.environ.get("ALERT2ATTACK_OLLAMA_MODEL", "qwen2.5:7b-instruct"))
+        llm = ollama_from_env()
     elif model in {"openai", "teacher"}:
         from alert2attack.agent.teacher import teacher_chat
 

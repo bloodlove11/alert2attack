@@ -45,11 +45,12 @@ from alert2attack.domain.scope import hydrate_involved_pids
 from alert2attack.tools.context import ToolContext, ToolResult
 from alert2attack.tools.registry import ToolRegistry
 from alert2attack.verify import VerificationReport, degrade_casefile, verify
-from alert2attack.verify.models import VerificationError
+from alert2attack.verify.models import VerificationError, VerificationStatus
 
 # Keep each investigate model turn small for 7B reliability.
 _MAX_TOOL_CALLS_PER_TURN = 3
-_DEFAULT_MAX_INVESTIGATE_TURNS = 8
+# 0 = no turn cap, matching Investigator. Budgets and the recursion limit stop the loop.
+_DEFAULT_MAX_INVESTIGATE_TURNS = 0
 _MAX_REPAIRS = 2
 _TOOL_RESULT_CHARS = 1800
 _DIGEST_PARTS_FOR_WRITE = 12
@@ -81,8 +82,19 @@ def _summarize_tool(name: str, result: ToolResult, *, limit: int = _TOOL_RESULT_
 
 
 def _degraded_casefile(reason: str, ledger_ids: list[str]) -> CaseFile:
-    eid = ledger_ids[0] if ledger_ids else "ev-0001"
-    claim = Claim(text=reason, evidence=[eid])
+    # An empty ledger means no action: every Claim has to cite something, and a
+    # placeholder id would be exactly the fabricated citation this repo exists to
+    # prevent. The reason still reaches the reader through open_questions.
+    actions = (
+        [
+            ActionRecommendation(
+                action=NextAction.ESCALATE,
+                rationale=Claim(text=reason, evidence=[ledger_ids[0]]),
+            )
+        ]
+        if ledger_ids
+        else []
+    )
     return CaseFile(
         verdict=Verdict.NOT_ENOUGH_EVIDENCE,
         confidence="low",
@@ -90,7 +102,7 @@ def _degraded_casefile(reason: str, ledger_ids: list[str]) -> CaseFile:
         timeline=[],
         techniques=[],
         scope=Scope(),
-        next_actions=[ActionRecommendation(action=NextAction.ESCALATE, rationale=claim)],
+        next_actions=actions,
         open_questions=[reason, "Re-run with a stronger model or collect more telemetry."],
     )
 
@@ -246,7 +258,6 @@ class InvestigationGraph:
             return {"done_investigating": True}
 
         messages = self._seed_investigate_messages(state)
-        # Refresh a short budget hint on the latest user/tool context without rewriting history.
         resp = self._llm("investigate", messages, tools=self._tools, tool_choice="auto")
 
         turns = int(state.get("investigate_turns") or 0) + 1
@@ -340,20 +351,22 @@ class InvestigationGraph:
         )
         return after
 
-    def _apply_verdict_floor(self, case_file: CaseFile) -> CaseFile:
+    def _apply_levers(self, case_file: CaseFile) -> CaseFile:
+        """Levers 1, 5 and 6: verdict floor, thin-window abstain, LSASS FP ceiling."""
         self.progress.phase("levers")
+        events = self._boxed_events()
         floored = self._lever(
             "verdict_floor", case_file, apply_verdict_floor(case_file, self.ctx.knowledge)
         )
         capped = self._lever(
-            "thin_window", floored, apply_thin_window_ceiling(floored, self._boxed_events())
+            "thin_window", floored, apply_thin_window_ceiling(floored, events)
         )
         return self._lever(
             "lsass_fp",
             capped,
             apply_lsass_fp_ceiling(
                 capped,
-                self._boxed_events(),
+                events,
                 self.ctx.store.get_alert(self.ctx.case_id),
             ),
         )
@@ -440,13 +453,13 @@ class InvestigationGraph:
             pre_errors = [e.model_dump() for e in report.errors]
 
         if report.passed:
-            status = "passed" if repairs_used == 0 else "repaired"
+            status: VerificationStatus = "passed" if repairs_used == 0 else "repaired"
             prior = [VerificationError.model_validate(e) for e in pre_errors]
             return {
-                "case_file": self._apply_verdict_floor(case_file),
+                "case_file": self._apply_levers(case_file),
                 "verification": VerificationReport(
                     passed=True,
-                    status=status,  # type: ignore[arg-type]
+                    status=status,
                     errors=[],
                     pre_repair_errors=prior,
                     repairs_used=repairs_used,
@@ -478,7 +491,7 @@ class InvestigationGraph:
         # Restore grounded pids after strip so key_pid_recall sees trigger/ledger pids
         # (verifier/degrade formulas unchanged; they already ran on the hydrated file).
         cleaned = self._hydrate_involved_pids(cleaned)
-        cleaned = self._apply_verdict_floor(cleaned)
+        cleaned = self._apply_levers(cleaned)
         return {"case_file": cleaned, "verification": final, "verify_done": True, "pre_repair_errors": pre_errors}
 
     def repair_node(self, state: GraphState) -> GraphState:

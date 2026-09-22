@@ -69,7 +69,9 @@ target-version = "py312"
 src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP"]
+# BLE is on because the code already carries `noqa: BLE001` with a reason at each
+# deliberate catch-all; without the rule selected those were decorative.
+select = ["E", "F", "I", "B", "UP", "BLE"]
 
 [tool.mypy]
 strict = true

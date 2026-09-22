@@ -7,13 +7,13 @@ accuracy here and nothing in it says the agent would investigate better. It
 answers a narrower question: given text an analyst could search with, how high
 does each method rank the technique the answer key names?
 
-**Dev split only, enforced.** The 13 test scenarios are the frozen headline
+Dev split only, and enforced. The 13 test scenarios are the frozen headline
 slice. Tuning retrieval against them would repeat the mistake the sibling
 CVE-to-ATT&CK repo had to footnote into uselessness (a post-hoc-tuned 0.504).
 ``load_dev_cases`` never loads a test scenario and ``evaluate`` refuses one that
 is handed to it, so the guarantee holds even if a caller builds cases by hand.
 
-**Pre-registered headline.** ``PRIMARY_QUERY``, ``HEADLINE_K`` and the headline
+The headline is pre-registered. ``PRIMARY_QUERY``, ``HEADLINE_K`` and the headline
 metrics below were fixed in this file before the first run. Every other query
 variant is reported next to it. Picking the best-looking column afterwards would
 be a garden of forking paths on 17 cases.
