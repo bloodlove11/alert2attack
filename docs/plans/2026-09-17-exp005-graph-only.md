@@ -1,6 +1,6 @@
-# EXP-005 graph-only N=13 — implementation plan
+# EXP-005 graph-only N=13: implementation plan
 
-**Goal:** Official test of untuned 7B + levers 1–6 so EXP-004 is no longer graph-confounded.
+Goal: Official test of untuned 7B + levers 1 to 6 so EXP-004 is no longer graph-confounded.
 
 ## Global Constraints
 
@@ -8,8 +8,6 @@
 - Do not loosen DR-012.
 - Do not train. Do not use `casefile-qlora-n14`.
 - KILL-14B. KILL-SWEEP.
-
----
 
 ### Task 1: T4 + Ollama 7B
 

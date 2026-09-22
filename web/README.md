@@ -23,9 +23,9 @@ npm --prefix web install
 npm --prefix web run dev
 ```
 
-<http://localhost:5173>. Port 5173 is not incidental — it is the origin the API
-allows by default (`DEFAULT_CORS_ORIGINS` in `alert2attack.api.app`). Change one and
-change the other, or set `ALERT2ATTACK_CORS_ORIGINS`.
+<http://localhost:5173>. Port 5173 is the origin the API allows by default
+(`DEFAULT_CORS_ORIGINS` in `alert2attack.api.app`). Change one and change the
+other, or set `ALERT2ATTACK_CORS_ORIGINS`.
 
 Point the console at a different API with `VITE_API_BASE`.
 
@@ -43,9 +43,9 @@ npm --prefix web run gen:types
 `openapi.json` is generated and gitignored; `schema.d.ts` is committed so the
 project typechecks without a running server.
 
-> `src/lib/api.ts` still declares its row types by hand. They mirror the Pydantic
-> models and are a deliberate stopgap — they should be replaced by references
-> into `schema.d.ts` rather than maintained alongside it.
+`src/lib/api.ts` aliases its row types out of `schema.d.ts`. The few it still
+declares by hand cover the routes the API types as free-form objects, which the
+OpenAPI document cannot describe.
 
 ## Checks
 
@@ -56,9 +56,9 @@ npm --prefix web run build
 
 ## Running it without a model
 
-Press **Investigate (replay)** on any case. The `replay` model is a canned
+Press Investigate (replay) on any case. The `replay` model is a canned
 responder (`alert2attack.agent.replay`) that needs no Ollama and no API key, so the
-whole loop — live trace, case file, evidence drawer — works on a bare checkout.
+whole loop works on a bare checkout: live trace, case file, evidence drawer.
 
 It is not an investigator and the UI says so next to the button. Everything
 around it is real: the graph runs, tools execute against the store, the ledger
@@ -72,10 +72,10 @@ and something like `600` when filming.
 ALERT2ATTACK_REPLAY_DELAY_MS=600 uv run uvicorn alert2attack.api.app:app --port 8000
 ```
 
-A replay run often ends **degraded**, and that is the verifier working rather
-than a bug: the graph hydrates `scope.involved_pids` after the write and can
-add a pid whose `process_create` was never fetched, so the claim is stripped.
-A real model on the same scenario hits the same path.
+A replay run often ends degraded, which is the verifier working: the graph
+hydrates `scope.involved_pids` after the write and can add a pid whose
+`process_create` was never fetched, so the claim is stripped. A real model on
+the same scenario hits the same path.
 
 For a real investigation, use `ollama` (needs the sidecar) or `teacher` (needs
 an API key).
@@ -100,7 +100,7 @@ CONSOLE_PASSWORD_HASH='scrypt$...' CONSOLE_JWT_SECRET='a-long-random-string' uv 
 `CONSOLE_JWT_SECRET` a random per-process secret is used, so tokens do not
 survive a restart.
 
-**This is demo-grade.** One configured operator, one `scrypt` hash, HS256 JWTs
+This is demo-grade. One configured operator, one `scrypt` hash, HS256 JWTs
 from PyJWT. No user table, no roles, no reset flow. A real deployment puts the
 console behind the organisation's OIDC provider and deletes `alert2attack.api.auth`.
 

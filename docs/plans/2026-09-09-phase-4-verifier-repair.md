@@ -1,12 +1,10 @@
-# Phase 4 — Verifier + Repair + Degrade Implementation Plan
+# Phase 4: Verifier + Repair + Degrade Implementation Plan
 
-> **For agentic workers:** Implement task-by-task. Steps use checkbox syntax.
+Goal: Enforce citation faithfulness: every CaseFile claim must cite ledger evidence; repair ≤2 via LLM; otherwise strip unsupported claims and mark degraded.
 
-**Goal:** Enforce citation faithfulness: every CaseFile claim must cite ledger evidence; repair ≤2 via LLM; otherwise strip unsupported claims and mark degraded.
+Architecture: Pure `alert2attack.verify.verify(...)` over `(CaseFile, EvidenceLedger, CaseStore, KnowledgeBase)`. LangGraph extends to `write → verify ⇄ repair (≤2) → [degrade] → END`. `InvestigationResult.verification` is always a `VerificationReport`.
 
-**Architecture:** Pure `alert2attack.verify.verify(...)` over `(CaseFile, EvidenceLedger, CaseStore, KnowledgeBase)`. LangGraph extends to `write → verify ⇄ repair (≤2) → [degrade] → END`. `InvestigationResult.verification` is always a `VerificationReport`.
-
-**Tech Stack:** Existing agent stack; no new deps.
+Tech Stack: Existing agent stack; no new deps.
 
 ## Global Constraints
 
@@ -14,15 +12,13 @@
 - Fabricated claims never leave clean (`status != "passed"` if stripped)
 - Fine-tuning remains out of scope (design §9)
 
----
-
 ### Task 1: Verifier + degrade
 
-**Files:** `src/alert2attack/verify/{__init__,models,verify,degrade}.py`, `tests/verify/test_verify.py`
+Files: `src/alert2attack/verify/{__init__,models,verify,degrade}.py`, `tests/verify/test_verify.py`
 
 ### Task 2: Graph verify/repair nodes
 
-**Files:** `src/alert2attack/agent/graph.py`, `prompts.py`, `investigator.py`
+Files: `src/alert2attack/agent/graph.py`, `prompts.py`, `investigator.py`
 
 ### Task 3: CLI + docs + PR
 

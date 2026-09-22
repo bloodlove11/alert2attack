@@ -1,12 +1,10 @@
 # EXP-002 Technique Candidates Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+Goal: Make fetched ATT&CK technique ids explicit to the write model without automatically converting speculative lookups into findings.
 
-**Goal:** Make fetched ATT&CK technique ids explicit to the write model without automatically converting speculative lookups into findings.
+Architecture: A pure helper extracts known `attack-T…` ids from the evidence ledger. `write_node` passes them to a dedicated supported-vs-speculative prompt checklist. Parsed `CaseFile` output is never mutated by this lever.
 
-**Architecture:** A pure helper extracts known `attack-T…` ids from the evidence ledger. `write_node` passes them to a dedicated supported-vs-speculative prompt checklist. Parsed `CaseFile` output is never mutated by this lever.
-
-**Tech Stack:** Python 3.12, Pydantic domain models, LangGraph, pytest, Ruff, mypy.
+Tech Stack: Python 3.12, Pydantic domain models, LangGraph, pytest, Ruff, mypy.
 
 ## Global Constraints
 
@@ -17,11 +15,9 @@
 - Do not derive techniques from `rule-*` ids or alert metadata.
 - Do not start LoRA / GPU training.
 
----
-
 ### Task 1: Candidate extraction
 
-**Files:**
+Files:
 - Create: `src/alert2attack/agent/technique_candidates.py`
 - Test: `tests/agent/test_technique_candidates.py`
 
@@ -33,7 +29,7 @@
 
 ### Task 2: Prompt contract
 
-**Files:**
+Files:
 - Modify: `src/alert2attack/agent/prompts.py`
 - Modify: `tests/agent/test_prompts.py`
 
@@ -46,7 +42,7 @@
 
 ### Task 3: Graph wiring
 
-**Files:**
+Files:
 - Modify: `src/alert2attack/agent/graph.py`
 - Modify: `tests/agent/test_graph_architecture.py`
 
@@ -59,7 +55,7 @@
 
 ### Task 4: Decision docs
 
-**Files:**
+Files:
 - Modify: `docs/experiments/DR-2026-09-12-013-exp-002-write-conservatism.md`
 - Modify: `docs/experiments/TRACKER.md`
 - Modify: `README.md`
@@ -67,7 +63,7 @@
 - [x] Record lever 2 as implemented (initially not live-dev measured).
 - [x] Record why deterministic projection was rejected.
 - [x] Preserve pre-floor EXP-001 headline numbers and no-launch language.
-- [x] After merge: record Lightning T4 **dev** 3-case wiring smoke in DR-013 /
+- [x] After merge: record Lightning T4 dev 3-case wiring smoke in DR-013 /
       TRACKER / README (no accuracy claim, no official test).
 
 ### Task 5: Verification and delivery
@@ -80,8 +76,8 @@
 
 ### Task 6: Live-dev wiring smoke (post-merge docs)
 
-- [x] Run three **dev** controls on Lightning T4 (`qwen2.5:7b-instruct`).
+- [x] Run three dev controls on Lightning T4 (`qwen2.5:7b-instruct`).
 - [x] Confirm candidates / `- none` / no false projection / no execution-only floor lift.
 - [x] Stop Studio; keep artifacts under
       `reports/diagnostic-exp002-technique-candidates/` (gitignored).
-- [x] Document outcomes; do **not** overwrite README Results headline table.
+- [x] Document outcomes; do not overwrite README Results headline table.

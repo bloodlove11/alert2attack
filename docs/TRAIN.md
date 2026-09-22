@@ -1,6 +1,6 @@
 # Train extras (optional)
 
-QLoRA SFT deps are **not** in the default runtime (API Docker / `uv sync` / CI).
+QLoRA SFT deps are kept out of the default runtime (API Docker / `uv sync` / CI).
 Lightning historically `pip install`ed `unsloth datasets trl` ad-hoc; the lock is the pin.
 
 ```bash
@@ -8,8 +8,8 @@ uv sync --group train
 ```
 
 That group is what `scripts/train_qlora_sft.py` imports (`unsloth`, `datasets`, `trl`, plus
-`torch` / `peft` / `bitsandbytes` / `transformers`). Do **not** `uv sync --group train` in CI
-or on the API image — CUDA wheels are large, and CI must not download models or launch GPU jobs.
+`torch` / `peft` / `bitsandbytes` / `transformers`). Never run `uv sync --group train` in CI
+or on the API image: CUDA wheels are large, and CI must not download models or launch GPU jobs.
 
 Eval / prepare JSONL stays on the default env:
 
@@ -39,4 +39,4 @@ ALERT2ATTACK_STUDIO_ROOT=/tmp/studio ALERT2ATTACK_EVAL_DIR=/tmp/eval ALERT2ATTAC
 ```
 
 Weights, adapters, GGUF, and HF caches stay gitignored. `reports/` is ignored as before.
-Recipe / gates: `docs/superpowers/plans/2026-09-09-finetune-lora-followup.md` (DR-011/012 unchanged).
+Recipe / gates: `docs/plans/2026-09-09-finetune-lora-followup.md` (DR-011/012 unchanged).

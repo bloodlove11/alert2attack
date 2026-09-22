@@ -1,12 +1,10 @@
-# NEE-twin thin-window abstain — implementation plan
+# NEE-twin thin-window abstain: implementation plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans (inline). Steps use checkbox (`- [ ]`) syntax for tracking.
+Goal: Cap writes on boxed trigger-only windows to `not_enough_evidence` so NEE twins are not labeled malicious, without dropping full-window gold-malicious keeps or loosening DR-012.
 
-**Goal:** Cap writes on boxed trigger-only windows to `not_enough_evidence` so NEE twins are not labeled malicious, without dropping full-window gold-malicious keeps or loosening DR-012.
+Architecture: Pure predicate + ceiling on boxed `CaseStore` events. Graph applies it after the EXP-002 verdict floor so a cited T1218 cannot lift a truncated twin. Catalog invariant locks the thin=NEE-twin construction.
 
-**Architecture:** Pure predicate + ceiling on boxed `CaseStore` events. Graph applies it after the EXP-002 verdict floor so a cited T1218 cannot lift a truncated twin. Catalog invariant locks the thin=NEE-twin construction.
-
-**Tech Stack:** Python 3.12, Pydantic, pytest, existing LangGraph verify node.
+Tech Stack: Python 3.12, Pydantic, pytest, existing LangGraph verify node.
 
 ## Global Constraints
 
@@ -17,20 +15,18 @@
 - Do not invent verdict, techniques, evidence ids, or pids.
 - Do not rewrite `next_actions`.
 - Never read gold inside the ceiling.
-- Ceiling runs **after** `apply_verdict_floor`.
-
----
+- Ceiling runs after `apply_verdict_floor`.
 
 ### Task 1: Thin-window predicate and ceiling
 
-**Files:**
+Files:
 - Create: `src/alert2attack/agent/thin_window.py`
 - Test: `tests/agent/test_thin_window.py`
 
-**Interfaces:**
+Interfaces:
 - Produces: `is_thin_trigger_window(events: Sequence[Event]) -> bool`, `apply_thin_window_ceiling(case_file: CaseFile, events: Sequence[Event]) -> CaseFile`, `CEILING_NOTE: str`
 
-- [ ] **Step 1: Write the failing tests**
+- [ ] Step 1: Write the failing tests
 
 ```python
 from alert2attack.agent.thin_window import apply_thin_window_ceiling, is_thin_trigger_window
@@ -86,71 +82,67 @@ def test_ceiling_beats_verdict_floor_on_thin_t1218() -> None:
     assert out.verdict is Verdict.NOT_ENOUGH_EVIDENCE
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] Step 2: Run test to verify it fails
 
 Run: `uv run pytest tests/agent/test_thin_window.py -q`
 
 Expected: FAIL (`thin_window` not defined)
 
-- [ ] **Step 3: Implement predicate + ceiling**
+- [ ] Step 3: Implement predicate + ceiling
 
-- [ ] **Step 4: Run tests**
+- [ ] Step 4: Run tests
 
 Run: `uv run pytest tests/agent/test_thin_window.py -q`
 
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [ ] Step 5: Commit
 
 ```bash
 git add src/alert2attack/agent/thin_window.py tests/agent/test_thin_window.py
 git commit -m "feat(agent): cap thin trigger-only windows to NEE"
 ```
 
----
-
 ### Task 2: Catalog invariant + graph wire
 
-**Files:**
+Files:
 - Modify: `src/alert2attack/agent/graph.py` (`_apply_verdict_floor` → floor then ceiling)
 - Test: `tests/agent/test_thin_window.py` (catalog), `tests/agent/test_graph_architecture.py`
 
-**Interfaces:**
+Interfaces:
 - Consumes: `apply_thin_window_ceiling`, `CaseStore.query_events(case_id, limit=1000)`
 - Produces: trace note `thin_window: <old> → not_enough_evidence`
 
-- [ ] **Step 1: Failing catalog + graph tests**
+- [ ] Step 1: Failing catalog + graph tests
 
 Catalog: every `*_nee` scenario with gold `not_enough_evidence` is thin; no gold-malicious scenario is thin.
 
 Graph: scripted write of malicious+`T1218.005` citing `ev-0001` / `attack-T1218.005` on `otrf_cmd_mshta_javascript_getobject_sct_nee` ends NEE with a `thin_window` note. Same write on `otrf_cmd_mshta_javascript_getobject_sct` stays malicious.
 
-- [ ] **Step 2: Run tests (expect FAIL on graph wire)**
+- [ ] Step 2: Run tests (expect FAIL on graph wire)
 
-- [ ] **Step 3: Apply ceiling after floor in `verify_node` passed and degraded exits**
+- [ ] Step 3: Apply ceiling after floor in `verify_node` passed and degraded exits
 
-- [ ] **Step 4: Run `uv run pytest tests/agent tests/dataset tests/domain -q`**
+- [ ] Step 4: Run `uv run pytest tests/agent tests/dataset tests/domain -q`
 
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [ ] Step 5: Commit
 
 ```bash
 git add src/alert2attack/agent/graph.py tests/agent/test_graph_architecture.py tests/agent/test_thin_window.py
 git commit -m "feat(agent): apply thin-window ceiling after verdict floor"
 ```
 
----
-
 ### Task 3: Tracker note (pre-measure)
 
-**Files:**
+Files:
 - Modify: `docs/experiments/TRACKER.md`, `docs/experiments/DR-2026-09-12-013-exp-002-write-conservatism.md`
 
-Record lever 5 as implemented, scripted-only, **not** a measured n_kept. Do not paste a counterfactual 14 as a live card.
+Record lever 5 as implemented, scripted-only, not a measured n_kept. Do not paste a counterfactual 14 as a live card.
 
-- [ ] **Step 1: Write the tracker / DR-013 lever-5 section**
-- [ ] **Step 2: Commit**
+- [ ] Step 1: Write the tracker / DR-013 lever-5 section
+- [ ] Step 2: Commit
 
 ```bash
 git add docs/experiments/TRACKER.md docs/experiments/DR-2026-09-12-013-exp-002-write-conservatism.md

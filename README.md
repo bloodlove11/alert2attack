@@ -266,7 +266,7 @@ Compose publishes the API on `127.0.0.1:8000` and Ollama on `127.0.0.1:11434`. D
 | Experiment log (hypothesis to decision) | [`docs/experiments/TRACKER.md`](docs/experiments/TRACKER.md) |
 | Optional QLoRA extras | [`docs/TRAIN.md`](docs/TRAIN.md) |
 | Teacher-dev distill data card (DR-012 locked) | [`docs/experiments/DATA_CARD-teacher-dev-v0.md`](docs/experiments/DATA_CARD-teacher-dev-v0.md) |
-| Design spec | [`docs/superpowers/specs/2026-09-09-edr-investigation-agent-design.md`](docs/superpowers/specs/2026-09-09-edr-investigation-agent-design.md) |
+| Design spec | [`docs/design/2026-09-09-edr-investigation-agent-design.md`](docs/design/2026-09-09-edr-investigation-agent-design.md) |
 | The 33 OTRF scenarios | [`datasets/scenarios/`](datasets/scenarios/), [`datasets/catalog.yaml`](datasets/catalog.yaml), [`datasets/AUTHORING.md`](datasets/AUTHORING.md) |
 
 ## For engineers

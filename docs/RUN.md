@@ -1,4 +1,4 @@
-# Run guide (Phase 6)
+# Run guide
 
 Local-first EDR investigation agent with CLI, eval, and HTTP API.
 
@@ -18,10 +18,9 @@ uv run ruff check . && uv run mypy
 
 QLoRA GPU extras are a separate optional group (not CI, not the API image): `uv sync --group train`. Paths and Lightning env vars: `docs/TRAIN.md`.
 
-
 ## Eval
 
-Offline plumbing smoke (writes `reports/`; numbers are **not** headline metrics):
+Offline plumbing smoke (writes `reports/`). Those numbers are never headline metrics:
 
 ```bash
 ./scripts/smoke_eval.sh --split test --limit 1
@@ -40,28 +39,28 @@ Live `--live b0` uses the ExpLabs teacher model (`teacher_chat`, e.g. `gpt-5.6-l
 
 `ALERT2ATTACK_B0_MODEL` overrides that choice: `auto` (default, the behaviour above), `teacher`, or
 `ollama`. Use `ALERT2ATTACK_B0_MODEL=ollama` to run the campaign's `$0` Ollama B0 (Task 2) while a
-teacher key is in the environment — a key that is *present* is not necessarily *usable* (dead
+teacher key is in the environment. A key that is present is not necessarily usable (dead
 gateway alias, key scoped to another project), and without the override a present key strands B0 on
 an unreachable route. Record which backend produced a B0 row: the per-case `trace.model` in the
-report JSON is the source of truth, and Ollama-backed vs teacher-backed B0 are different baselines.
+report JSON is the source of truth, and Ollama-backed and teacher-backed B0 are different baselines.
 
 `ALERT2ATTACK_OLLAMA_BASE_URL` points `agent-local-7b` (and Ollama-backed `b0`) at a remote Ollama
-OpenAI-compatible `/v1` — a Lightning Studio GPU, a laptop worker — without changing the arm name
-or the `qwen2.5:7b-instruct` tag. Default remains `http://127.0.0.1:11434/v1`. Record the host in
+OpenAI-compatible `/v1`, such as a Lightning Studio GPU or a laptop worker, without changing the arm
+name or the `qwen2.5:7b-instruct` tag. Default remains `http://127.0.0.1:11434/v1`. Record the host in
 the tracker; do not treat a CPU timeout row as the GPU row.
 
 Live arms (`b0`, `agent-local-7b`, `agent-teacher`) send one tiny preflight completion before the
 split is scored, so an unusable endpoint fails immediately, naming the model and base URL, instead
 of dying mid-split after partial spend.
 
-Paste the rendered **full-N** table into the README **Results** table. Truncated `--limit`
-slices are not headline rows. LoRA/distill **discuss** (DR-011): teacher **≥** B0 on
-`citation_post` and `key_pid_recall`, **and** strictly beats B0 on at least one of
-`action_safety` (higher) / `mean_cost` (lower) / `verdict_acc` (higher). Ties on citation+key_pid
-alone are not enough. Recipe: `docs/superpowers/plans/2026-09-09-finetune-lora-followup.md`.
-Live campaign (EXP-001) and ML Lead freeze: `docs/superpowers/plans/2026-09-10-live-eval-campaign.md`,
-`docs/experiments/TRACKER.md`. Discuss ≠ launch. Distill/QLoRA drafting is allowed; GPU is not.
-Do not train without an “Approved for launch” note + Deimos cost OK.
+Paste the rendered full-N table into the README Results table. Truncated `--limit`
+slices are not headline rows. The LoRA/distill discuss gate (DR-011) needs teacher at least equal to
+B0 on `citation_post` and `key_pid_recall`, and a strict win over B0 on at least one of
+`action_safety` (higher), `mean_cost` (lower) or `verdict_acc` (higher). Ties on citation and
+key_pid alone are not enough. Recipe: `docs/plans/2026-09-09-finetune-lora-followup.md`.
+Live campaign (EXP-001) and ML Lead freeze: `docs/plans/2026-09-10-live-eval-campaign.md`,
+`docs/experiments/TRACKER.md`. Clearing discuss is not a launch. Distill/QLoRA drafting is allowed;
+GPU is not. Do not train without an "Approved for launch" note and a Deimos cost OK.
 
 ## CLI
 
@@ -72,7 +71,7 @@ uv run alert2attack investigate otrf_empire_launcher_vbs --model ollama
 uv run alert2attack eval run --arm agent-local-7b --split test --limit 3
 ```
 
-Investigation **budgets default to unbounded** (no 12-tool / 20-LLM / 180s / 8-turn
+Investigation budgets default to unbounded (no 12-tool / 20-LLM / 180s / 8-turn
 caps). CLI `0` means unbounded: `--max-tools 0 --max-llm 0 --timeout-s 0 --max-turns 0`.
 Restore the old caps with env:
 
@@ -101,11 +100,11 @@ Without `CONSOLE_PASSWORD_HASH` there is no inbound auth on these endpoints, and
 
 - `GET /health`
 - `GET /metrics` (Prometheus)
-- `POST /investigations` — body `{ "scenario_id": "...", "model": "ollama", "sync": false }`
-  - `sync: false` → `202` + poll `GET /investigations/{id}`
-  - `sync: true` → `200` with job + case file (demo)
+- `POST /investigations`, body `{ "scenario_id": "...", "model": "ollama", "sync": false }`
+  - `sync: false` returns `202`, then poll `GET /investigations/{id}`
+  - `sync: true` returns `200` with the job and case file (demo)
 - `GET /investigations/{id}`
-- `GET /investigations` — recent jobs
+- `GET /investigations`, recent jobs
 
 ```bash
 uv run alert2attack serve --host 127.0.0.1 --port 8000
@@ -121,19 +120,19 @@ curl -s -X POST localhost:8000/investigations \
 
 ## Docker Compose
 
-Pulls `qwen2.5:7b-instruct` on first start (large download). Published ports bind to **127.0.0.1 only** (API `8000`, Ollama `11434`). The API has no inbound auth unless `CONSOLE_PASSWORD_HASH` is set, so do not remap these to `0.0.0.0` on a shared host.
+Pulls `qwen2.5:7b-instruct` on first start (large download). Published ports bind to 127.0.0.1 only (API `8000`, Ollama `11434`). The API has no inbound auth unless `CONSOLE_PASSWORD_HASH` is set, so do not remap these to `0.0.0.0` on a shared host.
 
 ```bash
 docker compose up --build
 ```
 
-API: `http://127.0.0.1:8000` — Ollama: `http://127.0.0.1:11434`
+API: `http://127.0.0.1:8000`. Ollama: `http://127.0.0.1:11434`.
 
 ## Teacher (Experiential Labs or OpenAI)
 
 The `teacher` / `agent-teacher` arm uses an OpenAI-compatible API.
 
-**Experiential Labs (preferred when `EXPLABS_API_KEY` is set):**
+Experiential Labs is preferred when `EXPLABS_API_KEY` is set:
 
 ```powershell
 $env:EXPLABS_API_KEY = "your-explabs-key"
@@ -141,7 +140,7 @@ $env:ALERT2ATTACK_TEACHER_MODEL = "gpt-5.6-luna"   # or deepseek-v4-flash / qwen
 uv run python scripts/smoke_eval.py --live teacher --split test --limit 3
 ```
 
-**OpenAI cloud** (if no ExpLabs key): set `OPENAI_API_KEY` instead.
+For OpenAI cloud, if you have no ExpLabs key, set `OPENAI_API_KEY` instead.
 
 Optional override: `ALERT2ATTACK_TEACHER_BASE_URL` (default ExpLabs OpenAI-compatible `/v1` endpoint).
 
@@ -162,6 +161,6 @@ Some OTRF scenario files contain real malware-like command lines (e.g. encoded P
 
 1. Add a Defender exclusion for your clone (e.g. `C:\src\alert2attack`)
 2. Or delete / quarantine only the blocked folder under `datasets/scenarios/`
-3. Eval loads by split first — a blocked **dev** file should not block `--split test`
+3. Eval loads by split first, so a blocked dev file should not block `--split test`
 
 Prefer cloning to `C:\src\...`, not Desktop/OneDrive.

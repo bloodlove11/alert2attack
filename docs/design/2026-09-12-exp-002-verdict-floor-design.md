@@ -1,8 +1,8 @@
-# EXP-002 verdict floor — design
+# EXP-002 verdict floor: design
 
-**Status:** Locked with DR-013. Graph lever only. Not a headline re-measure.  
-**Date:** 2026-09-12  
-**Decision:** `docs/experiments/DR-2026-09-12-013-exp-002-write-conservatism.md`
+Status: Locked with DR-013. Graph lever only. Not a headline re-measure.  
+Date: 2026-09-12  
+Decision: `docs/experiments/DR-2026-09-12-013-exp-002-write-conservatism.md`
 
 ## Problem
 
@@ -10,13 +10,13 @@ Live `agent-local-7b` (Lightning T4, N=13) never emits `malicious`. Tools run an
 
 ## Approaches
 
-**A. Prompt rewrite (rejected as first lever).** Contracts in `tests/agent/test_prompts.py` already lock the rubric. Another paragraph will not bind a 7B that already skipped it.
+A. Prompt rewrite (rejected as first lever). Contracts in `tests/agent/test_prompts.py` already lock the rubric. Another paragraph will not bind a 7B that already skipped it.
 
-**B. Deterministic post-verify floor on cited high-sev tactics (chosen).** Same idea as “do not invent ids”: only use techniques and `scope.persistence` that survived the verifier. Knowledge-base tactics decide severity. No gold.
+B. Deterministic post-verify floor on cited high-sev tactics (chosen). Same idea as "do not invent ids": only use techniques and `scope.persistence` that survived the verifier. Knowledge-base tactics decide severity. No gold.
 
-**C. Hydrate techniques from the alert Sigma rule, then floor (rejected).** `get_alert` does not stamp `rule-*` into the ledger. Using the alert rule as a technique would mark every `win_susp_lsass_access` window malicious, including the three gold `likely_benign` LSASS FPs and both NEE twins (same rule as the malicious twin).
+C. Hydrate techniques from the alert Sigma rule, then floor (rejected). `get_alert` does not stamp `rule-*` into the ledger. Using the alert rule as a technique would mark every `win_susp_lsass_access` window malicious, including the three gold `likely_benign` LSASS FPs and both NEE twins (same rule as the malicious twin).
 
-**D. LoRA (rejected).** DR-001 / EXP-004 stand. This is a write-policy miss, not a missing weight.
+D. LoRA (rejected). DR-001 / EXP-004 stand. This is a write-policy miss, not a missing weight.
 
 ## Unit
 
@@ -37,4 +37,4 @@ Live `agent-local-7b` (Lightning T4, N=13) never emits `malicious`. Tools run an
 
 ## Follow-up (not this change)
 
-Technique omission (tech P/R = 0 on 7/8 gold-malicious) needs a later **dev** lever so the writer actually emits techniques from the ledger. That is not this floor, and not LoRA.
+Technique omission (tech P/R = 0 on 7/8 gold-malicious) needs a later dev lever so the writer actually emits techniques from the ledger. That is not this floor, and not LoRA.

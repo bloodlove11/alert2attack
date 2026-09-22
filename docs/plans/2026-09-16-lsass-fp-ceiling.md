@@ -1,12 +1,10 @@
-# LSASS false-positive ceiling — implementation plan
+# LSASS false-positive ceiling: implementation plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans (inline). Steps use checkbox (`- [ ]`) syntax for tracking.
+Goal: Cap LSASS-access alerts that lack dump corroboration to `likely_benign` and strip containment so EXP-004's smoke kill cannot recur.
 
-**Goal:** Cap LSASS-access alerts that lack dump corroboration to `likely_benign` and strip containment so EXP-004’s smoke kill cannot recur.
+Architecture: Pure predicate on boxed events + alert rule. Graph applies it after the thin-window ceiling. Containment strip is required because `action_safe` is next_actions, not verdict.
 
-**Architecture:** Pure predicate on boxed events + alert rule. Graph applies it after the thin-window ceiling. Containment strip is required because `action_safe` is next_actions, not verdict.
-
-**Tech Stack:** Python 3.12, Pydantic, pytest, existing LangGraph verify node.
+Tech Stack: Python 3.12, Pydantic, pytest, existing LangGraph verify node.
 
 ## Global Constraints
 
@@ -16,13 +14,11 @@
 - Do not start LoRA / GPU / EXP-004 in this change.
 - Do not invent techniques, evidence ids, or pids.
 - Never read gold inside the ceiling.
-- Ceiling runs **after** `apply_thin_window_ceiling`.
-
----
+- Ceiling runs after `apply_thin_window_ceiling`.
 
 ### Task 1: Predicate + ceiling
 
-**Files:**
+Files:
 - Create: `src/alert2attack/agent/lsass_fp.py`
 - Test: `tests/agent/test_lsass_fp.py`
 
@@ -32,7 +28,7 @@
 
 ### Task 2: Graph wire
 
-**Files:**
+Files:
 - Modify: `src/alert2attack/agent/graph.py`
 - Test: `tests/agent/test_graph_architecture.py`
 

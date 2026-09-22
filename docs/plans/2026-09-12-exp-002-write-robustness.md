@@ -1,12 +1,10 @@
 # EXP-002 Write Robustness Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
+Goal: Reserve LLM/wall-clock budget for write and tolerate common 7B CaseFile JSON extras so lever 2 can run.
 
-**Goal:** Reserve LLM/wall-clock budget for write and tolerate common 7B CaseFile JSON extras so lever 2 can run.
+Architecture: Budget helpers expose remaining wall time; investigate stops early to preserve a write reserve. A pure normalizer strips unknown CaseFile keys and defaults missing confidence before validation. No automatic technique projection; metrics and official test untouched.
 
-**Architecture:** Budget helpers expose remaining wall time; investigate stops early to preserve a write reserve. A pure normalizer strips unknown CaseFile keys and defaults missing confidence before validation. No automatic technique projection; metrics and official test untouched.
-
-**Tech Stack:** Python 3.12, Pydantic CaseFile, LangGraph, pytest, Ruff, mypy.
+Tech Stack: Python 3.12, Pydantic CaseFile, LangGraph, pytest, Ruff, mypy.
 
 ## Global Constraints
 
@@ -16,21 +14,19 @@
 - Do not automatically add technique claims.
 - Do not start LoRA / GPU training.
 
----
-
 ### Task 1: Budget write reserve
 
-**Files:**
+Files:
 - Modify: `src/alert2attack/agent/budget.py`
 - Modify: `tests/agent/test_budget.py`
 
-- [x] Add failing tests for `remaining_time_s()` and “investigate must stop when only write reserve remains” helpers (or document constants used by graph).
+- [x] Add failing tests for `remaining_time_s()` and "investigate must stop when only write reserve remains" helpers (or document constants used by graph).
 - [x] Implement `remaining_time_s()` on `Budget`.
 - [x] Run budget tests green.
 
 ### Task 2: CaseFile JSON normalizer
 
-**Files:**
+Files:
 - Modify: `src/alert2attack/agent/jsonutil.py` (or new small module if cleaner)
 - Test: `tests/agent/test_jsonutil.py` (create if absent)
 
@@ -40,7 +36,7 @@
 
 ### Task 3: Graph wiring
 
-**Files:**
+Files:
 - Modify: `src/alert2attack/agent/graph.py`
 - Modify: `tests/agent/test_graph_architecture.py`
 
@@ -52,7 +48,7 @@
 
 ### Task 4: Decision docs
 
-**Files:**
+Files:
 - Modify: `docs/experiments/DR-2026-09-12-013-exp-002-write-conservatism.md`
 - Modify: `docs/experiments/TRACKER.md`
 - Modify: `README.md` (narrative only; no Results table overwrite)
@@ -70,7 +66,7 @@
 
 ### Task 6: Live-dev wiring smoke (post-merge docs)
 
-- [x] Run three **dev** controls on Lightning T4 with adequate timeout.
+- [x] Run three dev controls on Lightning T4 with adequate timeout.
 - [x] Confirm write can run / normalize / no false projection.
 - [x] Stop Studio; keep artifacts under `reports/diagnostic-exp002-write-robustness/` (gitignored).
-- [x] Document outcomes; do **not** overwrite README Results headline table.
+- [x] Document outcomes; do not overwrite README Results headline table.
